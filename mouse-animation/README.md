@@ -1,0 +1,1 @@
+To illustrate how the feature works, place all the files in one folder and run index.html via a browser (Edge, Chrome, or Firefox).

@@ -1,0 +1,24 @@
+/* Remove the margins and stretch the background */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+  }
+  
+  /* Background for animation */
+  #background {
+    position: absolute;
+    width: 200vw;
+    height: 200vh;
+    top: -50vh;
+    left: -50vw;
+    background: radial-gradient(circle at center, #00f2ff, #000);
+    transition: transform 0.1s ease-out;
+  }
+  

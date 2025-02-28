@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+    <img src="/logo/logo.svg" alt="Logo" style="height: 40px; width: auto;">
+    <a mat-button routerLink="/">Home</a>
+    <span class="spacer"></span>
+    <a mat-button routerLink="/trips">Discover</a>
+    <span class="small-spacer"></span>
+    <a mat-button routerLink="/trips">Trips</a>
+    <span class="small-spacer"></span>
+    <a mat-button routerLink="/contact">About Us</a>
+    <!--<button mat-icon-button>
+        Sign In
+        <mat-icon>account_circle</mat-icon>
+    </button>-->
+    <span class="small-spacer"></span>
+    <button mat-button (click)="signIn()">Sign In</button>
+</mat-toolbar>

@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  imports: [MatToolbarModule,MatIconModule],
+  imports: [MatToolbarModule, MatIconModule],
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {

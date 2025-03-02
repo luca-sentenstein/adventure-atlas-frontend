@@ -1,0 +1,16 @@
+a {
+    display: inline-block;
+    align-content: center;
+    text-align: center;
+    padding: 0.875rem 1.188rem;
+    font-size: 1.25rem;
+    text-decoration: none;
+    color: #FEFEFE;
+    background-color: #3B9FFD;
+    border-radius: 50px;
+
+    &:hover {
+        background-color: #0071e3;
+        transition: background-color 0.25s ease-in-out;
+    }
+}

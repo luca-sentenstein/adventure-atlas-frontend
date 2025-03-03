@@ -9,7 +9,8 @@ a {
     white-space: nowrap;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 
-    &:hover {
+    &:hover,
+    &.selected {
         background-color: #1E1E1E;
         color: #FAF9F6;
     }

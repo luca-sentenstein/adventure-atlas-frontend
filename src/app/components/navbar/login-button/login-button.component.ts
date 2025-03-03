@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
     selector: 'navbar-login-button',
     imports: [
-        RouterLink
+        RouterLink,
+        RouterLinkActive
     ],
     templateUrl: './login-button.component.html',
     styleUrl: './login-button.component.scss'

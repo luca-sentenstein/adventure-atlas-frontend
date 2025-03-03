@@ -1,0 +1,16 @@
+a {
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #1E1E1E;
+    border: #1E1E1E 2px solid;
+    border-radius: 30px;
+    padding: 0.311rem 1.063rem;
+    white-space: nowrap;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+    &:hover {
+        background-color: #1E1E1E;
+        color: #FAF9F6;
+    }
+}

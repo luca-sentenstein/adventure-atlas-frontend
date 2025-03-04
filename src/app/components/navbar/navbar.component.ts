@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { LogoComponent } from '../logo/logo.component';
-import { LinkComponent } from '../link/link.component';
 import { LoginButtonComponent } from './login-button/login-button.component';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { LinkComponent } from '../links/link/link.component';
 
 @Component({
     selector: 'app-navbar',

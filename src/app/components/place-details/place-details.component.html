@@ -1,0 +1,7 @@
+<mat-card *ngIf="data?.address">
+    <img mat-card-image class="place-image" [src]="data?.imageUrl" alt="Image of search result"/>
+    <mat-card-header>
+        <img mat-card-avatar [src]="data?.iconUrl" alt="Icon of search result"/>
+        <mat-card-title>{{ data?.name }}</mat-card-title>
+    </mat-card-header>
+</mat-card>

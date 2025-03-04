@@ -1,0 +1,17 @@
+<nav>
+    <div (mouseover)="logo.onMouseOver()" (mouseleave)="logo.onMouseLeave()" (click)="this.onLogoClick()">
+        <app-logo #logo hoverColor="rgba(30, 30, 30, 0.8)"></app-logo>
+        <p *ngIf="!this.isHomePage()" @fadeInOut>Home</p>
+    </div>
+    <ul>
+        <li>
+            <app-link link="discover">Discover</app-link>
+        </li>
+        <li>
+            <app-link link="about">About</app-link>
+        </li>
+        <li>
+            <navbar-login-button link="auth">Log In</navbar-login-button>
+        </li>
+    </ul>
+</nav>

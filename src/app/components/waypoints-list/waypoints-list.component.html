@@ -1,0 +1,4 @@
+<!--Does it make sense to track location as a substitute for id?-->
+@for (waypoint of waypoints; track waypoint.location){
+    <app-place-details [waypoint]="waypoint"></app-place-details>
+}

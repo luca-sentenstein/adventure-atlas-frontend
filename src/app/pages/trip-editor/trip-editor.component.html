@@ -1,0 +1,6 @@
+<app-stages-list></app-stages-list>
+<app-edit-section [tripID]="0" [stageID]="0" (waypointsChanged)="waypoints = $event"></app-edit-section>
+<div class="map">
+    <app-map-display [waypoints]="waypoints" [isRoute]="true"></app-map-display>
+</div>
+<app-waypoints-list [waypoints]="waypoints"></app-waypoints-list>

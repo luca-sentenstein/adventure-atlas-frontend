@@ -1,0 +1,6 @@
+<!--This is the section of the page where the actual editing of a trip takes place-->
+<div class="container">
+    <app-place-autocomplete #autocompleteInputField (placeChanged)="waypoint = $event"></app-place-autocomplete>
+    <app-place-details [waypoint]="waypoint"></app-place-details>
+    <button (click)="addWaypoint()">Add</button>
+</div>

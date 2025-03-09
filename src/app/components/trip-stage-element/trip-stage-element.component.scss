@@ -1,0 +1,27 @@
+.box {
+    padding: 15px 0;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    //cursor: move; //=> moved into html with additional logic
+    background: white;
+    font-size: 14px;
+    border-radius: 10px;
+    height: 100px;
+    user-select: none; //Make text not selectable with cursor to not interfere with dragging
+}
+
+.text{
+    margin: 0;
+}
+
+.line{
+    width: 90%;
+    border: none;
+    height: 3px;
+    margin: 0;
+    background-color: black;
+}

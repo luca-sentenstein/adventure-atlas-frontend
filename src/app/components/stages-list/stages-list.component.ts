@@ -1,12 +1,42 @@
 import { Component } from '@angular/core';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { NgIf } from '@angular/common';
+import { Stage } from '../../interfaces/stage';
+import { StagesListDayComponent } from '../stages-list-day/stages-list-day.component';
+import { StagesManagementService } from '../../services/stages-management.service';
 
 @Component({
   selector: 'app-stages-list',
-    imports: [
+    imports: [DragDropModule, StagesListDayComponent, NgIf,
     ],
   templateUrl: './stages-list.component.html',
   styleUrl: './stages-list.component.scss'
 })
 export class StagesListComponent {
+    showOptions = false;
+    constructor(protected stagesService: StagesManagementService) {}
 
+    toggleOptions() {
+        this.showOptions = !this.showOptions;
+    }
+
+    addNewStage() {
+        this.stagesService.addStage(this.stagesService.getTripLength()); //Add stage to last day
+        this.showOptions = false; // Close the dropdown after selection
+    }
+
+    addNewDay() {
+        this.stagesService.addNewDay();
+        this.showOptions = false; // Close the dropdown after selection
+    }
+
+    onStageReordered(event: { movedStage: Stage; newDay: number; newIndex: number }) {
+        this.stagesService.reorderStage(event.movedStage, event.newDay, event.newIndex);
+        console.log(event);
+    }
+
+    getDayRange(): number[] {
+        const length = this.stagesService.getTripLength();
+        return Array.from({ length }, (_, i) => i + 1); // Generate days 1 to tripLength
+    }
 }

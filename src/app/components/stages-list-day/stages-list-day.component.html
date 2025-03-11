@@ -6,9 +6,10 @@
     </div>
     <div class="list" cdkDropList [cdkDropListData]="localStages" (cdkDropListDropped)="drop($event)">
         <!--Is it a good idea to track stage directly?-->
-        @for (stage of localStages; track stage){
+        @for (stage of localStages; track stage.id){
             <div cdkDrag [cdkDragDisabled]="!!stage.startTime">
-                <app-trip-stage-element class="box"
+                <app-trip-stage-element
+                                        [id]="stage.id"
                                         [title]="stage.title"
                                         [startTime]="stage.startTime"
                                         [endTime]="stage.endTime"

@@ -1,4 +1,17 @@
-<!--Does it make sense to track waypoint as a substitute for id?-->
-@for (waypoint of waypoints; track waypoint){
-    <app-place-details [waypoint]="waypoint"></app-place-details>
-}
+<div class="container">
+    <div class="header">
+        <h2>Waypoints</h2>
+    </div>
+    <div class="waypoints-list"
+         cdkDropList
+         [cdkDropListData]="waypoints"
+         (cdkDropListDropped)="drop($event)">
+        <div class="spacer"></div>
+        @for (waypoint of waypoints; track waypoint.id) {
+            <div cdkDrag>
+                <app-waypoint-element [waypoint]="waypoint"></app-waypoint-element>
+                <div class="custom-placeholder" *cdkDragPlaceholder></div>
+            </div>
+        }
+    </div>
+</div>

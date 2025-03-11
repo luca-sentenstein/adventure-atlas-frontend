@@ -1,6 +1,22 @@
-<app-stages-list></app-stages-list>
-<app-edit-section [tripID]="0" [stageID]="0" (waypointsChanged)="waypoints = $event"></app-edit-section>
-<div class="map">
-    <app-map-display [waypoints]="waypoints" [isRoute]="true"></app-map-display>
+<div class="container">
+    <app-stages-list></app-stages-list>
+    <div class="map-group">
+        <app-waypoints-list
+            class="waypoints-list"
+            [@fadeInOutLeft]="selectedStage ? 'visible' : 'hidden'"
+            [stage]="selectedStage">
+        </app-waypoints-list>
+        <div class="map">
+            <app-searchbar (newCoordinates)="onPreviewCoordinates($event)" [@fadeInOutUp]="selectedStage ? 'visible' : 'hidden'"></app-searchbar>
+            <app-map-display
+                [stage]="selectedStage"
+                [previewCoordinates]="previewCoordinates">
+            </app-map-display>
+        </div>
+        <app-edit-section
+            class="edit-section"
+            [@fadeInOutRight]="selectedStage ? 'visible' : 'hidden'"
+            [tripID]="0">
+        </app-edit-section>
+    </div>
 </div>
-<app-waypoints-list [waypoints]="waypoints"></app-waypoints-list>

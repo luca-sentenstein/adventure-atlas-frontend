@@ -1,1 +1,8 @@
-<input #inputField type="text" [placeholder]="placeholder"/>
+<div class="autocomplete-container">
+    <input
+        #inputField
+        type="text"
+        [placeholder]="placeholder || 'Search for a place...'"
+        (input)="onInputChange()"
+    />
+</div>

@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, NgZone, Output, ViewChild } from '@angular/core';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { PlaceSearchResult } from '../../interfaces/place-search-result';
+import { Waypoint } from '../../interfaces/waypoint';
 
 @Component({
   selector: 'app-place-autocomplete',
@@ -13,7 +14,7 @@ export class PlaceAutocompleteComponent {
 
     @Input() placeholder = ""
 
-    @Output() placeChanged = new EventEmitter<PlaceSearchResult>();
+    @Output() newSearchResult = new EventEmitter<PlaceSearchResult>();
 
     autocomplete: google.maps.places.Autocomplete | undefined;
 
@@ -34,7 +35,7 @@ export class PlaceAutocompleteComponent {
             };
 
             this.ngZone.run(() => {
-                this.placeChanged.emit(result);
+                this.newSearchResult.emit(result);
             })
 
             console.log(place); //just for debugging
@@ -47,5 +48,11 @@ export class PlaceAutocompleteComponent {
 
     public resetValue() {
         this.inputField.nativeElement.value = "";
+    }
+
+    onInputChange() {
+        if (this.inputField.nativeElement.value === '') {
+            this.newSearchResult.emit(undefined); // Clear on empty input
+        }
     }
 }

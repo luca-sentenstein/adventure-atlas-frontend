@@ -4,10 +4,10 @@
     justify-content: center;
     //padding: 20px 0 0 0;
     align-items: center;
-    border: 2px solid lightgray;
+    border: 2px solid #1E1E1E;
     border-radius: 10px;
     width: 340px;
-    height: 60rem;
+    height: 100%;
     position: relative; /* For z-index context */
     overflow: hidden; /* Prevents overflow issues */
 }
@@ -34,7 +34,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 30px; /* Height of the gradient */
+    height: 20px; /* Height of the gradient */
     background: linear-gradient(to bottom, white 0%, transparent 100%); /* Gradient over content */
     z-index: 1003; /* Above stage elements and options */
     pointer-events: none; /* Allows clicks to pass through to content */
@@ -50,26 +50,40 @@
     height: 48px; /* Fixed height to match button height */
     position: relative; /* For z-index context if needed */
 
+    button{
+        width: 96px;
+        height: 48px;
+        border-radius: 10px;
+        border: none;
+        background: #007bff;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1002; /* Ensure button is above options */
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
 }
 
-.add-button button {
-    width: 96px;
-    height: 48px;
-    border-radius: 10px;
-    border: none;
-    background: #007bff;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1002; /* Ensure button is above options */
-}
 
-.add-button button:hover {
-    background: #0056b3;
-}
+//Add gradient over add button
+//.add-button:before{
+//    content: '';
+//    position: absolute;
+//    top: -20px;
+//    left: 0;
+//    width: 100%;
+//    height: 20px; /* Height of the gradient */
+//    background: linear-gradient(to top, #1E1E1E 0%, transparent 100%); /* Gradient over content */
+//    z-index: 1003; /* Above stage elements and options */
+//    pointer-events: none; /* Allows clicks to pass through to content */
+//}
+
 
 .options-wrapper {
     position: absolute;

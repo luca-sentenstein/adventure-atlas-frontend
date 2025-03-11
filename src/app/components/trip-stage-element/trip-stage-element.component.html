@@ -1,11 +1,11 @@
-<div class="box" [style.cursor]="locked ? 'default' : 'move'">
+<div class="box" [style.cursor]="locked ? 'default' : 'move'" (click)="onStageClick()">
     <h3 class="text">{{ title }}</h3>
     <hr class="line">
     <h3 class="text">
         @if (startTime){
-            <span *ngIf="startTime">{{ startTime.toTimeString().substring(0, 5) }}</span>
+            <span *ngIf="startTime">{{ startTime | date:"HH:mm" }}</span>
             <span *ngIf="startTime && endTime"> - </span>
-            <span *ngIf="endTime">{{ endTime.toTimeString().substring(0, 5) }}</span>
+            <span *ngIf="endTime">{{ endTime | date:"HH:mm" }}</span>
         }@else{
             <br>
         }

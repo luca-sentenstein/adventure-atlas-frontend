@@ -31,7 +31,6 @@ export class StagesListDayComponent {
     }>();
 
 
-
     drop(event: CdkDragDrop<Stage[]>) {
         if (!event.previousContainer.data || !event.container.data) {
             console.error('Drop event data is undefined:', event);

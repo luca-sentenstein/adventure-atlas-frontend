@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Stage } from '../interfaces/stage';
-import { Location } from '../interfaces/location';
+import { Waypoint } from '../interfaces/waypoint';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -8,15 +8,20 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class StagesManagementService {
     private stagesSubject = new BehaviorSubject<Stage[]>([
-        { title: 'Item 1', startTime: new Date(), endTime: new Date(), day: 1, locations: [] },
-        { title: 'Item 2', startTime: undefined, endTime: undefined, day: 1, locations: [] },
-        { title: 'Item 3', startTime: undefined, endTime: undefined, day: 2, locations: [] },
-        { title: 'Item 4', startTime: new Date(), endTime: undefined, day: 3, locations: [] },
+        { id: 1, title: 'Item 1', startTime: new Date(), endTime: new Date(), day: 1, waypoints: [], idCounter: 0, isRoute: false, description: "", cost: 0 },
+        { id: 2, title: 'Item 2', startTime: undefined, endTime: undefined, day: 1, waypoints: [], idCounter: 0, isRoute: true, description: "", cost: 100 },
+        { id: 3, title: 'Item 3', startTime: undefined, endTime: undefined, day: 2, waypoints: [], idCounter: 0, isRoute: false, description: "", cost: 234 },
+        { id: 4, title: 'Item 4', startTime: new Date(), endTime: undefined, day: 3, waypoints: [], idCounter: 0, isRoute: false, description: "", cost: 69 },
     ]);
     stages$ = this.stagesSubject.asObservable();
 
     private tripLengthSubject = new BehaviorSubject<number>(3); // Will be set based on backend
     tripLength$ = this.tripLengthSubject.asObservable();
+
+    private selectedStageSubject = new BehaviorSubject<Stage | null>(null); // Track selected stage
+    selectedStage$ = this.selectedStageSubject.asObservable();
+
+    private idCounter = 4;
 
     getStages(): Stage[] {
         return this.stagesSubject.value;
@@ -58,11 +63,16 @@ export class StagesManagementService {
         const stages = [...this.stagesSubject.value];
 
         const newStage: Stage = {
+            id: ++this.idCounter, // Generate unique ID
             title: `New Stage (Day ${day})`,
             startTime: undefined,
             endTime: undefined,
             day: day,
-            locations: []
+            waypoints: [],
+            idCounter: 0,
+            isRoute: false,
+            description: "",
+            cost: 0
         };
 
         // Find the starting index of the target day
@@ -90,6 +100,49 @@ export class StagesManagementService {
         const currentLength = this.tripLengthSubject.value;
         this.tripLengthSubject.next(currentLength + 1); // Increment tripLength
     }
+
+    addNewWaypoint(name: string | undefined, latitude: number | undefined, longitude: number | undefined) {
+        if(name === undefined || longitude === undefined || latitude === undefined){
+            console.error("Waypoint invalid!");
+            return;
+        }
+
+        if(this.selectedStageSubject.value){
+            const stage = this.selectedStageSubject.value;
+
+            const waypoint: Waypoint = {
+                id: ++stage.idCounter,
+                name: name,
+                latitude: latitude, //Todo: Should be invalid if the location has to lat or lng
+                longitude: longitude,
+            };
+
+            stage.waypoints.push(waypoint);
+
+            this.updateStage(stage);
+        }
+    }
+
+    reorderWaypoints(previousIndex: number, currentIndex: number) {
+        const stage = this.selectedStageSubject.value;
+        if (!stage) {
+            console.warn('No stage selected, cannot reorder waypoints.');
+            return;
+        }
+
+        const waypoints = [...stage.waypoints]; // Create a copy to avoid mutating the original directly
+        const [movedWaypoint] = waypoints.splice(previousIndex, 1); // Remove the moved waypoint
+        waypoints.splice(currentIndex, 0, movedWaypoint); // Insert it at the new position
+
+        // Create a new stage with the reordered waypoints
+        const updatedStage = {
+            ...stage,
+            waypoints: waypoints
+        };
+
+        this.updateStage(updatedStage);
+    }
+
 
 
     reorderStage(movedStage: Stage, newDay: number, newIndex: number) {
@@ -130,5 +183,38 @@ export class StagesManagementService {
 
         // Emit the updated array
         this.stagesSubject.next(stages);
+    }
+
+    selectStage(stageId: number | null) {
+        const stages = this.stagesSubject.value;
+        const stage = stageId !== null ? stages.find(s => s.id === stageId) || null : null;
+        this.selectedStageSubject.next(stage); // Update selected stage based on id
+    }
+
+    getSelectedStageId(): number | null {
+        return this.selectedStageSubject.value?.id || null;
+    }
+
+    updateStages(newStages: Stage[]) {
+        this.stagesSubject.next(newStages);
+        const currentSelectedId = this.getSelectedStageId();
+        if (currentSelectedId !== null) {
+            this.selectStage(currentSelectedId); // Reselect to update reference
+        }
+    }
+
+
+
+    updateStage(updatedStage: Stage) {
+        const stages = [...this.stagesSubject.value];
+        const index = stages.findIndex(s => s.id === updatedStage.id);
+        if (index !== -1) {
+            // Inline the deep copy directly into the assignment
+            stages[index] = {
+                ...updatedStage,
+                waypoints: [...updatedStage.waypoints]
+            };
+            this.updateStages(stages);
+        }
     }
 }

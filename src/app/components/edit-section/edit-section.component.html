@@ -1,6 +1,40 @@
 <!--This is the section of the page where the actual editing of a trip takes place-->
-<div class="container">
-    <app-place-autocomplete #autocompleteInputField (placeChanged)="waypoint = $event"></app-place-autocomplete>
-    <app-place-details [waypoint]="waypoint"></app-place-details>
-    <button (click)="addWaypoint()">Add</button>
+<div class="edit-container">
+    @if (stage){
+        <div class="header">
+            <h2>Edit Stage</h2>
+        </div>
+        <div class="content-wrapper">
+            <div class="attribute">
+                <label for="title">Title:</label>
+                <input id="title" type="text" [(ngModel)]="stage.title" (ngModelChange)="updateStage()" placeholder="Stage Title" />
+            </div>
+            <div class="attribute">
+                <label for="description">Description:</label>
+                <textarea id="description" [(ngModel)]="stage.description" (ngModelChange)="updateStage()" placeholder="Stage Description"></textarea>
+            </div>
+            <div class="group">
+                <div class="attribute">
+                    <label for="startTime">Start Time:</label>
+                    <input id="startTime" type="time" step="300" [value]="stage.startTime | date:'HH:mm'" (input)="updateTime('startTime', $event)"/>
+                </div>
+                <div class="attribute">
+                    <label for="endTime">End Time:</label>
+                    <input id="endTime" type="time" step="300" [value]="stage.endTime | date:'HH:mm'" (input)="updateTime('endTime', $event)"/>
+                </div>
+            </div>
+            <div class="cost-group">
+                <!--<label for="cost">Cost:</label>-->
+                <input id="cost" type="number" [(ngModel)]="stage.cost" (ngModelChange)="updateStage()" placeholder="0"/>
+                <span class="currency-symbol">€</span>
+            </div>
+            <div class="group">
+                <label for="isRoute">Calculate Route:</label>
+                <label class="switch">
+                    <input id="isRoute" type="checkbox" [(ngModel)]="stage.isRoute" (ngModelChange)="updateStage()" />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    }
 </div>

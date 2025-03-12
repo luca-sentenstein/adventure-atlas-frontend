@@ -16,10 +16,10 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    background-color: #1E1E1E;
-    color: white;
+    background-color: rgba(255, 255, 255, 0.26);
+    color: #1E1E1E;
     border-radius: 10px 10px 0 0;
-    border-bottom: white 2px solid;
+    border-bottom: rgba(0, 0, 0, 0.26) 2px solid;
 }
 
 .waypoints-list {
@@ -32,7 +32,7 @@
     border-radius: 0 0 10px 10px;
     overflow-y: auto;
     gap: 10px;
-    background-color: #1E1E1E;
+    background-color: rgba(255, 255, 255, 0.26);
     flex-grow: 1;
 }
 

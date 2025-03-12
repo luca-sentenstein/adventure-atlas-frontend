@@ -1,1 +1,12 @@
-<p>auth works!</p>
+<main>
+    <div>
+        <app-login-form
+            *ngIf="this.logInVisible"
+            (toggleForms)="this.toggleForm()">
+        </app-login-form>
+        <app-register-form
+            *ngIf="this.registerVisible"
+            (toggleForms)="this.toggleForm()">
+        </app-register-form>
+    </div>
+</main>

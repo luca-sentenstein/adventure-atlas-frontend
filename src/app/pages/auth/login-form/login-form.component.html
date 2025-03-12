@@ -1,0 +1,12 @@
+<form (ngSubmit)="onSubmit($event)" [formGroup]="this.form">
+    <h3>Login</h3>
+    <app-input [control]="this.form.controls.username" id="username" label="Username" type="text"></app-input>
+    <app-input [control]="this.form.controls.password" id="password" label="Password" type="password"></app-input>
+    <app-checkbox [control]="this.form.controls.remember" id="remember" label="Remember me"></app-checkbox>
+    <p *ngIf="this.errorMessage" class="errorMessage">{{ this.errorMessage }}</p>
+    <app-submit-button text="Login"></app-submit-button>
+    <p>
+        Don't have an account yet? <br>
+        <button type="button" (click)="this.toggleForm()">Sign In</button>
+    </p>
+</form>

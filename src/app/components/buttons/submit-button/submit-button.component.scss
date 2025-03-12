@@ -1,0 +1,15 @@
+button[type="submit"] {
+    height: 3.125rem;
+    width: 100%;
+    font-size: 1.25rem;
+    background-color: #1E1E1E;
+    color: #E1E1E1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        box-shadow: 0 0 7px rgba(0, 0, 0, 0.75);
+    }
+}

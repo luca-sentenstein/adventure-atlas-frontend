@@ -1,0 +1,18 @@
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 85vh;
+
+    div {
+        width: 25rem;
+        background-color: rgba(0, 0, 0, 0.26);
+        border-radius: 20px;
+        padding: 2.5rem 3.25rem;
+        box-sizing: border-box;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

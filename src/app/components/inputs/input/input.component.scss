@@ -1,0 +1,32 @@
+.inputBox {
+    position: relative;
+    margin-top: 3.125rem;
+
+    input {
+        width: 100%;
+        font-size: 1.25rem;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid #1E1E1E;
+        outline: none;
+        color: #1E1E1E;
+
+        &:focus ~ label,
+        &:valid ~ label {
+            transform: translateY(-200%);
+        }
+
+        &.ng-invalid.ng-dirty:valid {
+            border-bottom-color: red;
+        }
+    }
+
+    label {
+        position: absolute;
+        transform: translateY(-100%);
+        left: 0.5rem;
+        pointer-events: none;
+        transition: transform 0.5s ease;
+        font-size: 1.25rem;
+    }
+}

@@ -44,14 +44,14 @@ body::before {
 }
 
 :root {
-    --color-bg1: rgb(108, 0, 162);
-    --color-bg2: rgb(0, 17, 82);
-    --color1: 18, 113, 255;
-    --color2: 221, 74, 255;
+    --color-bg1: rgb(173, 255, 236);
+    --color-bg2: rgb(130, 245, 255);
+    --color1: 0, 255, 27;
+    --color2: 161, 180, 255;
     --color3: 100, 220, 255;
-    --color4: 200, 50, 50;
-    --color5: 180, 180, 50;
-    --color-interactive: 140, 100, 255;
+    --color4: 255, 161, 252;
+    --color5: 255, 174, 174;
+    --color-interactive: 255, 251, 0;
     --circle-size: 80%;
     --blending: hard-light;
 }

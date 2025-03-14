@@ -1,0 +1,16 @@
+.checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 2.183rem 0;
+    gap: 0.5rem;
+
+    input {
+        cursor: pointer;
+    }
+
+    label {
+        font-size: 1rem;
+        pointer-events: none;
+    }
+}

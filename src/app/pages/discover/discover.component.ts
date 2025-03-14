@@ -28,8 +28,4 @@ export class DiscoverComponent {
             })
         );
     }
-
-    trackById(_: number, trip: Trip) {
-        return trip.id;
-    }
 }

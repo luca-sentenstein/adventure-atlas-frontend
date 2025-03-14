@@ -1,6 +1,6 @@
 <main>
     <ng-container *ngIf="trips$ | async as trips; else noTrips">
-        <ng-container *ngFor="let trip of trips; trackBy: trackById">
+        <ng-container *ngFor="let trip of trips;">
             <app-trip-card [trip]="trip"></app-trip-card>
         </ng-container>
     </ng-container>

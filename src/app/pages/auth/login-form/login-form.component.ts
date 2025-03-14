@@ -4,6 +4,8 @@ import { NgIf } from '@angular/common';
 import { InputComponent } from '../../../components/inputs/input/input.component';
 import { CheckboxComponent } from '../../../components/inputs/checkbox/checkbox.component';
 import { SubmitButtonComponent } from '../../../components/buttons/submit-button/submit-button.component';
+import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-login-form',
@@ -27,7 +29,7 @@ export class LoginFormComponent {
         remember: [false, [Validators.required]],
     })
 
-    constructor() {
+    constructor(private authService: AuthService, private router: Router) {
         this.form.valueChanges.subscribe(_ => {
             this.errorMessage = null;
         })
@@ -41,7 +43,23 @@ export class LoginFormComponent {
             this.errorMessage = "Invalid form data";
             return;
         }
-        console.log(this.form.value);
+        this.authService.login(
+            {
+                "userName": this.form.value.username!,
+                "password": this.form.value.password!
+            }
+        ).subscribe({
+            next: () => this.router.navigate(["/trips"]),
+            error: error => {
+                if (error.status === 401) {
+                    this.errorMessage = "Invalid username or password";
+                } else if (error.status === 0) {
+                    this.errorMessage = "Server is not available";
+                } else {
+                    this.errorMessage = error.message;
+                }
+            },
+        })
     }
 
     toggleForm() {

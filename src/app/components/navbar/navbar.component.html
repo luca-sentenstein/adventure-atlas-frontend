@@ -7,11 +7,17 @@
         <li>
             <app-link link="discover">Discover</app-link>
         </li>
+        <li *ngIf="authService.isLoggedIn()">
+            <app-link link="trips">Trips</app-link>
+        </li>
         <li>
             <app-link link="about">About</app-link>
         </li>
-        <li>
-            <navbar-login-button link="auth">Log In</navbar-login-button>
+        <li *ngIf="!authService.isLoggedIn()">
+            <navbar-button (onClick)="navigateToAuth()" [isPage]="isAuthPage()">Log In</navbar-button>
+        </li>
+        <li *ngIf="authService.isLoggedIn()">
+            <navbar-button (onClick)="authService.logout()">Log Out</navbar-button>
         </li>
     </ul>
 </nav>

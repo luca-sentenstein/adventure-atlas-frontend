@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpContext } from '@angular/common/http';
 import { BASE_URL } from '../../constants';
 import { Trip } from '../interfaces/trip';
+import { AUTH_REQUIRED } from '../interceptors/request.interceptor';
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,10 @@ export class DiscoverService {
     }
 
     getAllPublicTrips() {
-        return this.http.get<Trip[]>(BASE_URL + "/trip/discover");
+        return this.http.get<Trip[]>(
+            BASE_URL + "/trip/discover",
+            {
+                context: new HttpContext().set(AUTH_REQUIRED, false)
+            });
     }
 }

@@ -4,6 +4,7 @@ import { NgIf } from '@angular/common';
 import { SubmitButtonComponent } from '../../../components/buttons/submit-button/submit-button.component';
 import { InputComponent } from '../../../components/inputs/input/input.component';
 import { CheckboxComponent } from '../../../components/inputs/checkbox/checkbox.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
     selector: 'app-register-form',
@@ -30,7 +31,7 @@ export class RegisterFormComponent {
         remember: [false, [Validators.required]]
     })
 
-    constructor() {
+    constructor(private authService: AuthService) {
         this.form.valueChanges.subscribe(_ => {
             this.errorMessage = null;
         })
@@ -44,7 +45,27 @@ export class RegisterFormComponent {
             this.errorMessage = "Invalid form data";
             return;
         }
-        console.log(this.form.value);
+        this.authService.register(
+            {
+                "firstName": this.form.value.firstName!,
+                "lastName": this.form.value.lastName!,
+                "userName": this.form.value.username!,
+                "email": this.form.value.email!,
+                "password": this.form.value.password!
+            }
+        ).subscribe({
+            next: () => {
+                this.toggleForm();
+                alert("Registration successful! Please log in to continue.");
+            },
+            error: error => {
+                if (error.status === 0) {
+                    this.errorMessage = "Server is not available";
+                } else {
+                    this.errorMessage = error.message;
+                }
+            },
+        })
     }
 
     toggleForm() {

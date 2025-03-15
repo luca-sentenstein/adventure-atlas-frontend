@@ -1,18 +1,19 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { LogoComponent } from '../logo/logo.component';
-import { LoginButtonComponent } from './login-button/login-button.component';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { LinkComponent } from '../links/link/link.component';
+import { AuthService } from '../../services/auth.service';
+import { ButtonComponent } from './button/button.component';
 
 @Component({
     selector: 'app-navbar',
     imports: [
         LogoComponent,
         LinkComponent,
-        LoginButtonComponent,
-        NgIf
+        NgIf,
+        ButtonComponent
     ],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss',
@@ -31,7 +32,7 @@ import { LinkComponent } from '../links/link/link.component';
 export class NavbarComponent implements AfterViewInit {
     @ViewChild("logo") logo!: LogoComponent;
 
-    constructor(private router: Router) {
+    constructor(private router: Router, protected authService: AuthService) {
     }
 
     ngAfterViewInit(): void {
@@ -42,14 +43,19 @@ export class NavbarComponent implements AfterViewInit {
     }
 
     navigateToHome(): void {
-        this.router.navigate(['/']).then(_ => {
-        }).catch(e => {
-            console.error(e)
-        });
+        void this.router.navigate(['/'])
     }
 
     onLogoClick() {
         this.logo.onMouseLeave();
         this.navigateToHome()
+    }
+
+    isAuthPage(): boolean {
+        return this.router.url === '/auth';
+    }
+
+    navigateToAuth() {
+        void this.router.navigate(['/auth']);
     }
 }

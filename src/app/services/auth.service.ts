@@ -4,6 +4,7 @@ import { BASE_URL } from '../../constants';
 import { AUTH_REQUIRED } from '../interceptors/request.interceptor';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
     providedIn: 'root'
@@ -14,7 +15,8 @@ export class AuthService {
     }
 
     isLoggedIn() {
-        return !!localStorage.getItem('access');
+        const token = this.getToken();
+        return !!token && !this.isTokenExpired(token);
     }
 
     getToken() {
@@ -51,5 +53,13 @@ export class AuthService {
         localStorage.removeItem('access');
         void this.router.navigate(['/']);
         alert("You have been logged out");
+    }
+
+    private isTokenExpired(token: string) {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken && decodedToken.exp) {
+            return decodedToken.exp * 1000 < Date.now();
+        }
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" #container>
     <div class="header">
         <h2>
             Day {{day}}
@@ -7,15 +7,17 @@
     <div class="list" cdkDropList [cdkDropListData]="localStages" (cdkDropListDropped)="drop($event)">
         <!--Is it a good idea to track stage directly?-->
         @for (stage of localStages; track stage.id){
-            <div cdkDrag [cdkDragDisabled]="!!stage.startTime">
+            <div cdkDrag class="drag-item" [cdkDragDisabled]="!!stage.startTime" (cdkDragMoved)="dragMoved($event)">
                 <app-trip-stage-element
                                         [id]="stage.id"
                                         [title]="stage.title"
                                         [startTime]="stage.startTime"
                                         [endTime]="stage.endTime"
                                         [locked]="!!stage.startTime">
-                    <div class="custom-placeholder" *cdkDragPlaceholder></div>
                 </app-trip-stage-element>
+                <div class="custom-placeholder"
+                     *cdkDragPlaceholder
+                     [class.over-trash-placeholder]="isOverTrash"></div>
             </div>
         }
     </div>

@@ -217,4 +217,13 @@ export class StagesManagementService {
             this.updateStages(stages);
         }
     }
+
+    deleteStage(stage: Stage){
+        const stages = [...this.stagesSubject.value];
+        const index = stages.findIndex(s => s.id === stage.id);
+        if (index !== -1) {
+            stages.splice(index, 1);
+            this.updateStages(stages);
+        }
+    }
 }

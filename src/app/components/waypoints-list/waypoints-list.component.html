@@ -1,16 +1,25 @@
-<div class="container">
+<div class="container"
+     #listContainer
+     cdkDropList
+     [cdkDropListData]="waypoints"
+     (cdkDropListDropped)="drop($event)">
     <div class="header">
         <h2>Waypoints</h2>
     </div>
-    <div class="waypoints-list"
-         cdkDropList
-         [cdkDropListData]="waypoints"
-         (cdkDropListDropped)="drop($event)">
+    <div class="waypoints-list" #dropList>
         <div class="spacer"></div>
         @for (waypoint of waypoints; track waypoint.id) {
-            <div cdkDrag>
+            <div class="drag-item"
+                 cdkDrag
+                 #itemElem
+                 [@fadeMove]="skipEnterAnimation ? null : 'enter'"
+                 [cdkDragData]="waypoint"
+                 (cdkDragMoved)="dragMoved($event)"
+                 (cdkDragReleased)="dragReleased($event)">
                 <app-waypoint-element [waypoint]="waypoint"></app-waypoint-element>
-                <div class="custom-placeholder" *cdkDragPlaceholder></div>
+                <div class="custom-placeholder"
+                     *cdkDragPlaceholder
+                     [class.over-trash]="isOverTrash"></div>
             </div>
         }
     </div>

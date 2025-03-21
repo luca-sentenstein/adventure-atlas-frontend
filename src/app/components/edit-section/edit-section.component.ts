@@ -1,13 +1,8 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import {PlaceAutocompleteComponent} from "../place-autocomplete/place-autocomplete.component";
-import { PlaceSearchResult } from '../../interfaces/place-search-result';
-import { WaypointElementComponent } from '../waypoint-element/waypoint-element.component';
+import { Component, Input } from '@angular/core';
 import { Stage } from '../../interfaces/stage';
 import { StagesManagementService } from '../../services/stages-management.service';
-import { Waypoint } from '../../interfaces/waypoint';
-import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { handleAutoChangeDetectionStatus } from '@angular/cdk/testing';
 
 @Component({
   selector: 'app-edit-section',
@@ -56,5 +51,5 @@ export class EditSectionComponent {
         }
     }
 
-
+    //Todo: Delete Stages and Points
 }

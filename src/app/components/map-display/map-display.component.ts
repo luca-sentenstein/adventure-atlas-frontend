@@ -1,5 +1,4 @@
 import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
-import { PlaceSearchResult } from '../../interfaces/place-search-result';
 import {GoogleMap, GoogleMapsModule, MapDirectionsService} from '@angular/google-maps';
 import {map} from "rxjs";
 import {NgIf} from "@angular/common";
@@ -25,40 +24,54 @@ export class MapDisplayComponent {
 
     markerPositions: google.maps.LatLng[] = [];
     previewMarkerPosition: google.maps.LatLng | undefined; // Temporary marker for preview
+    waypoints: Waypoint[] = [];
+    isRoute: boolean | undefined;
 
 
     constructor(private directionsService: MapDirectionsService) {}
 
     ngOnChanges(changes: SimpleChanges) {
         console.log(this.stage);
-        const waypoints = this.getWaypoints();
-        const waypointsLocations = this.getLocations(waypoints);
+
 
         if (changes['previewCoordinates']) {
             this.handlePreviewCoordinates(this.previewCoordinates);
         }
         else{
-            if (waypointsLocations.length === 0) {
-                this.directionsResult = undefined;
-                this.markerPositions = [];
-                this.center = { lat: 0, lng: 0 };
-                this.zoom = 3;
-                this.panToIfReady(this.center);
-            }
-            else{
-                if(this.stage?.isRoute){
-                    if (waypointsLocations.length === 1) {
-                        this.goToLocation(waypointsLocations[0]);
-                    } else if (waypointsLocations.length > 1) {
-                        this.getDirections(waypointsLocations);
-                    }
+
+            const waypoints = this.getWaypoints();
+
+            if(this.stage?.isRoute!=this.isRoute || !this.sameWaypoints(this.waypoints, waypoints)){
+                this.waypoints = waypoints;
+                this.isRoute = this.stage?.isRoute;
+
+                const waypointsLocations = this.getLocations(waypoints);
+
+                if (waypointsLocations.length === 0) {
+                    this.directionsResult = undefined;
+                    this.markerPositions = [];
+                    this.center = { lat: 0, lng: 0 };
+                    this.zoom = 3;
+                    this.panToIfReady(this.center);
                 }
                 else{
-                    this.directionsResult = undefined;
-                    this.markerPositions = waypointsLocations;
+                    if(this.stage?.isRoute){
+                        if (waypointsLocations.length === 1) {
+                            this.goToLocation(waypointsLocations[0]);
+                        } else if (waypointsLocations.length > 1) {
+                            this.getDirections(waypointsLocations);
+                        }
+                    }
+                    else{
+                        this.directionsResult = undefined;
+                        this.markerPositions = waypointsLocations;
+                    }
                 }
             }
+
+
         }
+
     }
 
 
@@ -94,7 +107,7 @@ export class MapDisplayComponent {
         this.panToIfReady(this.center);
     }
 
-    getWaypoints(): any[] { // Adjust type based on your Waypoint interface
+    getWaypoints(): Waypoint[]{
         return this.stage?.waypoints || [];
     }
 
@@ -130,6 +143,20 @@ export class MapDisplayComponent {
             this.center = { lat: waypoints[0].lat(), lng: waypoints[0].lng() }; // Center on first waypoint
             this.zoom = 12; // Adjust zoom for directions
             this.panToIfReady(this.center);
+        });
+    }
+
+    sameWaypoints(arr1: Waypoint[], arr2: Waypoint[]): boolean {
+        if (arr1.length != arr2.length) return false;
+
+        return arr1.every((waypoint1, index) => {
+            const waypoint2 = arr2[index];
+            return (
+                waypoint1.id == waypoint2.id &&
+                waypoint1.name == waypoint2.name &&
+                waypoint1.latitude == waypoint2.latitude &&
+                waypoint1.longitude == waypoint2.longitude
+            );
         });
     }
 

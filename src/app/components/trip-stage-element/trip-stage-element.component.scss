@@ -7,13 +7,14 @@
     justify-content: space-between;
     box-sizing: border-box;
     //cursor: move; //=> moved into html with additional logic
-    background: white;
+    //background: white;
     font-size: 14px;
     border-radius: 10px;
     height: 100px;
     user-select: none; //Make text not selectable with cursor to not interfere with dragging
 }
 
+//Todo: if title gets deleted in input section, the line moves up a bit; should be empty string with same height?
 .text{
     margin: 0;
     white-space: nowrap;

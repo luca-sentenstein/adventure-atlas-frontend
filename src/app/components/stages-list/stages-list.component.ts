@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgIf } from '@angular/common';
 import { Stage } from '../../interfaces/stage';
@@ -13,12 +13,14 @@ import { StagesManagementService } from '../../services/stages-management.servic
   styleUrl: './stages-list.component.scss'
 })
 export class StagesListComponent {
+    @ViewChild("container") container!: ElementRef;
     showOptions = false;
     constructor(protected stagesService: StagesManagementService) {}
 
     toggleOptions() {
         this.showOptions = !this.showOptions;
     }
+    //Todo: Deactivate showOptions if user clicks somewhere other than the option buttons
 
     addNewStage() {
         this.stagesService.addStage(this.stagesService.getTripLength()); //Add stage to last day
@@ -33,6 +35,10 @@ export class StagesListComponent {
     onStageReordered(event: { movedStage: Stage; newDay: number; newIndex: number }) {
         this.stagesService.reorderStage(event.movedStage, event.newDay, event.newIndex);
         console.log(event);
+    }
+
+    onStageDeleted(event: { deletedStage: Stage }) {
+        this.stagesService.deleteStage(event.deletedStage);
     }
 
     getDayRange(): number[] {

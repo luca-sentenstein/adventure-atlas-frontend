@@ -13,7 +13,7 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
     let headers = req.body ? new HttpHeaders({"Content-Type": "application/json"}) : new HttpHeaders();
 
     if (req.context.get(AUTH_REQUIRED)) {
-        headers.set("Authorization", "Bearer " + authService.getToken())
+        headers = headers.set("Authorization", "Bearer " + authService.getToken())
     }
 
     const modifiedReq = req.clone({

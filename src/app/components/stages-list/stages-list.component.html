@@ -6,13 +6,13 @@
         }
         <div class="spacer"></div>
     </div>
-    <div class="options-wrapper" *ngIf="showOptions" (click)="$event.stopPropagation()">
+    <div class="options-wrapper" *ngIf="showOptions" (click)="$event.stopPropagation()" (mouseenter)="keepOptionsOpen()" (mouseleave)="closeOptions()">>
         <div class="options">
             <div class="option" (click)="addNewStage()">Add stage</div>
             <div class="option" (click)="addNewDay()">Add day</div>
         </div>
     </div>
     <div class="add-button">
-        <button (click)="toggleOptions()">+</button>
+        <button (mouseenter)="openOptions()" (mouseleave)="closeOptions()">+</button>
     </div>
 </div>

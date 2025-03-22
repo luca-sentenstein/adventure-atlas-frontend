@@ -15,12 +15,28 @@ import { StagesManagementService } from '../../services/stages-management.servic
 export class StagesListComponent {
     @ViewChild("container") container!: ElementRef;
     showOptions = false;
+    isHovering = false; // Track if the user is hovering over the button or the menu
     constructor(protected stagesService: StagesManagementService) {}
 
-    toggleOptions() {
-        this.showOptions = !this.showOptions;
+    openOptions() {
+        this.showOptions = true;
+        this.isHovering = true;
     }
-    //Todo: Deactivate showOptions if user clicks somewhere other than the option buttons
+
+    keepOptionsOpen() {
+        this.isHovering = true;
+    }
+
+    closeOptions() {
+        this.isHovering = false;
+
+        setTimeout(() => {
+            if (!this.isHovering) {
+                this.showOptions = false;
+            }
+        }, 100); // Delay to prevent flickering
+    }
+
 
     addNewStage() {
         this.stagesService.addStage(this.stagesService.getTripLength()); //Add stage to last day

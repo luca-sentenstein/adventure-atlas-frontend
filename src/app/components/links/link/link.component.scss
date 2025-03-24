@@ -4,6 +4,9 @@ a {
     text-decoration: none;
     color: #1E1E1E;
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
 
     &::after {
         content: '';

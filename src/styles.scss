@@ -65,6 +65,7 @@ body::before {
     top: 0;
     left: 0;
     z-index: -2;
+    //opacity: 0.7; //could be from 0 to 1 to show or hide waves.png
 
     svg {
         position: fixed;

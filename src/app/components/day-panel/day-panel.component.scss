@@ -1,0 +1,33 @@
+#container{
+    //border-radius: 15px;
+    //padding: 2rem 0;
+    box-sizing: border-box;
+}
+
+#details-container{
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    padding: 0 2rem;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+#deleteButton{
+    border: 2px solid red;
+    border-radius: 30px;
+    background-color: transparent;
+    cursor: pointer;
+    color: red;
+    font-size: 1.125rem;
+    font-weight: bolder;
+    padding: 0.25rem 1.125rem;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+#deleteButton:hover{
+    background-color: red;
+    color: white;
+}
+

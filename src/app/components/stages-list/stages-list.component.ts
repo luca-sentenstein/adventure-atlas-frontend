@@ -39,7 +39,17 @@ export class StagesListComponent {
 
 
     addNewStage() {
-        this.stagesService.addStage(this.stagesService.getTripLength()); //Add stage to last day
+        if(this.stagesService.getSelectedDay() != null) {
+            this.stagesService.addStage(<number>this.stagesService.getSelectedDay()); //Add stage to selected day
+        }
+        else{
+            if(this.stagesService.getTripLength() != 0) {
+                this.stagesService.addStage(this.stagesService.getTripLength()); //Add stage to last day
+            }else{
+                this.stagesService.addNewDay();
+                this.stagesService.addStage(1); // Create first day by adding stage with day 1
+            }
+        }
         this.showOptions = false; // Close the dropdown after selection
     }
 

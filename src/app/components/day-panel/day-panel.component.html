@@ -1,0 +1,7 @@
+<div id="container">
+    <div id="details-container">
+        <h1>Day: {{stagesService.getSelectedDay()}}</h1>
+        <button id="deleteButton" (click)="deleteDay()">Delete</button>
+    </div>
+    <app-timeline [highlightDay]="selectedDay" [startDate]="stagesService.getStartDate()" [tripLength]="stagesService.getTripLength()"></app-timeline>
+</div>

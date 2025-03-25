@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DatePipe, NgIf } from '@angular/common';
 import { StagesManagementService } from '../../services/stages-management.service';
 
@@ -18,11 +18,12 @@ export class TripStageElementComponent {
     @Input() endTime: Date | undefined;
     @Input() locked: boolean = false; //Attribute could be useful to highlight a draggable item in some way
 
-    constructor(private stagesService: StagesManagementService) {}
+    constructor(protected stagesService: StagesManagementService) {}
 
 
     onStageClick() {
         const currentId = this.stagesService.getSelectedStageId();
         this.stagesService.selectStage(currentId === this.id ? null : this.id); // Toggle selection
+        this.stagesService.selectDay(null);
     }
 }

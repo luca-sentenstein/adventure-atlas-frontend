@@ -4,19 +4,27 @@
 
 
 .header{
-    width: 100%;
+    width: calc(100% + 20px);
+    margin: -10px -10px 0px -10px; /* Counter the padding from .list */
     display: flex;
     justify-content: center;
     background-color: #1E1E1E;
     color: white;
     border-radius: 10px 10px 0 0;
+    height: 69px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.list.selected{
+    background-color: #999999;
 }
 
 .drag-item {
     transition: /*transform 250ms cubic-bezier(0, 0, 0.2, 1),*/ background-color 250ms ease, opacity 250ms ease;
-    background-color: white;
+    //background-color: white;
     color: #1E1E1E;
-    opacity: 0.8;
+    //opacity: 0.8;
     border-radius: 10px;
     position: relative;
 }
@@ -28,7 +36,7 @@
     min-height: 60px;
     display: flex;
     flex-direction: column;
-    border-radius: 0 0 10px 10px;
+    border-radius: 10px 10px 10px 10px;
     overflow: hidden;
     padding: 10px;
     gap: 10px;
@@ -36,7 +44,7 @@
 }
 
 .list.cdk-drop-list-dragging .drag-item:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 250ms ease-in-out;
 }
 
 .cdk-drag-preview {
@@ -56,11 +64,6 @@
 
 .cdk-drag-animating {
     transition: transform 250ms ease;
-}
-
-
-.list.cdk-drop-list-dragging .box:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 

@@ -1,4 +1,4 @@
-<div class="box" [style.cursor]="locked ? 'default' : 'grab'" (click)="onStageClick()">
+<div class="box" [class.selected]="stagesService.getSelectedStageId() == id" [style.cursor]="locked ? 'default' : 'grab'" (click)="onStageClick()">
     <h3 class="text">{{ title }}</h3>
     <hr class="line">
     <h3 class="text">

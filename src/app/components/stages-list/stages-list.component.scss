@@ -10,6 +10,7 @@
     height: 100%;
     position: relative; /* For z-index context */
     overflow: hidden; /* Prevents overflow issues */
+    box-sizing: border-box;
 }
 
 .spacer{

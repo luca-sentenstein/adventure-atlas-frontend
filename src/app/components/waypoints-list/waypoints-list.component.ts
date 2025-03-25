@@ -58,10 +58,11 @@ export class WaypointsListComponent {
 
 
     constructor(
-        private stagesService: StagesManagementService,
+        protected stagesService: StagesManagementService,
         private cdr: ChangeDetectorRef,
         private animationBuilder: AnimationBuilder
     ) {}
+
 
     drop(event: CdkDragDrop<Waypoint[]>) {
         if (event.isPointerOverContainer) {
@@ -90,6 +91,7 @@ export class WaypointsListComponent {
     dragReleased(event: CdkDragRelease<Waypoint>) {
         if (this.isOverTrash) {
             const index = this.waypoints.indexOf(event.source.data);
+
             const elements = this.itemElements.toArray();
 
             let transforms = [];
@@ -108,14 +110,10 @@ export class WaypointsListComponent {
 
 
             // Create animation for remaining elements
-            const animation1 = this.animationBuilder.build([
+            const animation = this.animationBuilder.build([
                 style({ transform: 'translateY(80px)' }),
                 animate('300ms ease-out', style({ transform: 'translateY(0)' }))
             ]);
-            //const animation2 = this.animationBuilder.build([
-            //    style({ transform: 'translateY(0px)' }),
-            //    animate('300ms ease-out', style({ transform: 'translateY(0)' }))
-            //]);
 
 
             const players: AnimationPlayer[] = [];
@@ -139,12 +137,6 @@ export class WaypointsListComponent {
                 startIndex = placeholderIndex;
 
 
-
-                //for (let i = placeholderIndex; i < elements.length; i++) {
-                //    const player = animation3.create(elements[i].nativeElement);
-                //    player.play();
-                //    players.push(player);
-                //}
             } else if (index < (transforms.length - 1) && transforms[index + 1] != 'none') {
                 //Placeholder below index
 
@@ -160,24 +152,6 @@ export class WaypointsListComponent {
 
 
                 startIndex = placeholderIndex + 1;
-
-                //for (let i = placeholderIndex + 1; i < elements.length; i++) {
-                //    const player = animation3.create(elements[i].nativeElement);
-                //    player.play();
-                //    players.push(player);
-                //}
-
-
-                //for (let i = 0; i <= placeholderIndex; i++) {
-                //    const player = animation2.create(elements[i].nativeElement);
-                //    player.play();
-                //    players.push(player);
-                //}
-                //for (let i = placeholderIndex + 1; i < elements.length; i++) {
-                //    const player = animation1.create(elements[i].nativeElement);
-                //    player.play();
-                //    players.push(player);
-                //}
             }
             else{
                 //Placeholder has same index as the original index of the element
@@ -185,16 +159,10 @@ export class WaypointsListComponent {
                 placeholderIndex = index;
 
                 startIndex = placeholderIndex + 1;
-
-                //for (let i = placeholderIndex + 1; i < elements.length; i++) {
-                //    const player = animation1.create(elements[i].nativeElement);
-                //    player.play();
-                //    players.push(player);
-                //}
             }
 
             for (let i = startIndex; i < elements.length; i++) {
-                const player = animation1.create(elements[i].nativeElement);
+                const player = animation.create(elements[i].nativeElement);
                 player.play();
                 players.push(player);
             }
@@ -212,7 +180,6 @@ export class WaypointsListComponent {
 
             console.log(index);
             console.log("Detected Placeholder Index:", placeholderIndex);
-
 
 
 
@@ -234,9 +201,9 @@ export class WaypointsListComponent {
 
     private deleteWaypoint(index: number) {
         if (this.stage && this.waypoints.length > index) {
-            this.stage.waypoints.splice(index, 1);
+            //this.stage.waypoints.splice(index, 1);
+           this.stagesService.deleteWaypoint(index);
             this.cdr.detectChanges(); // Force change detection to update the DOM
-            //Todo: notify service? (cdr can probably removed if structured differently through service)
         }
     }
 

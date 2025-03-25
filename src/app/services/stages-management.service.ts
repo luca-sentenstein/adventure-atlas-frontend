@@ -21,6 +21,12 @@ export class StagesManagementService {
     private selectedStageSubject = new BehaviorSubject<Stage | null>(null); // Track selected stage
     selectedStage$ = this.selectedStageSubject.asObservable();
 
+    private selectedDaySubject = new BehaviorSubject<number | null>(null); // Track selected day
+    selectedDay$ = this.selectedDaySubject.asObservable();
+
+    private startDateSubject = new BehaviorSubject<Date | null>(new Date(1999, 4, 20)); // Track trip start day
+    startDate$ = this.startDateSubject.asObservable();
+
     private idCounter = 4;
 
     getStages(): Stage[] {
@@ -31,8 +37,16 @@ export class StagesManagementService {
         return this.tripLengthSubject.value;
     }
 
+    getStartDate(){
+        return this.startDateSubject.value;
+    }
+
     setTripLength(length: number) {
         this.tripLengthSubject.next(length);
+    }
+
+    getSelectedStage(){
+        return this.selectedStageSubject.value;
     }
 
 
@@ -102,31 +116,33 @@ export class StagesManagementService {
     }
 
     addNewWaypoint(name: string | undefined, latitude: number | undefined, longitude: number | undefined) {
+        const stage = this.selectedStageSubject.value;
+        if (!stage) {
+            console.error('No stage selected, cannot add waypoint.');
+            return;
+        }
+
         if(name === undefined || longitude === undefined || latitude === undefined){
             console.error("Waypoint invalid!");
             return;
         }
 
-        if(this.selectedStageSubject.value){
-            const stage = this.selectedStageSubject.value;
+        const waypoint: Waypoint = {
+            id: ++stage.idCounter,
+            name: name,
+            latitude: latitude, //Todo: Should be invalid if the location has no lat or lng
+            longitude: longitude,
+        };
 
-            const waypoint: Waypoint = {
-                id: ++stage.idCounter,
-                name: name,
-                latitude: latitude, //Todo: Should be invalid if the location has to lat or lng
-                longitude: longitude,
-            };
+        stage.waypoints.push(waypoint);
 
-            stage.waypoints.push(waypoint);
-
-            this.updateStage(stage);
-        }
+        this.updateStage(stage);
     }
 
     reorderWaypoints(previousIndex: number, currentIndex: number) {
         const stage = this.selectedStageSubject.value;
         if (!stage) {
-            console.warn('No stage selected, cannot reorder waypoints.');
+            console.error('No stage selected, cannot reorder waypoints.');
             return;
         }
 
@@ -141,6 +157,24 @@ export class StagesManagementService {
         };
 
         this.updateStage(updatedStage);
+    }
+
+    deleteWaypoint(index: number){
+        const stage = this.selectedStageSubject.value;
+        if (!stage) {
+            console.error('No stage selected, cannot delete waypoint.');
+            return;
+        }
+
+        stage.waypoints.splice(index, 1); // Remove the waypoint
+
+        this.updateStage(stage);
+    }
+
+
+
+    getWaypoints(){
+        return this.selectedStageSubject.value?.waypoints || [];
     }
 
 
@@ -191,8 +225,16 @@ export class StagesManagementService {
         this.selectedStageSubject.next(stage); // Update selected stage based on id
     }
 
+    selectDay(day: number | null) {
+        this.selectedDaySubject.next(day);
+    }
+
     getSelectedStageId(): number | null {
         return this.selectedStageSubject.value?.id || null;
+    }
+
+    getSelectedDay(): number | null {
+        return this.selectedDaySubject.value;
     }
 
     updateStages(newStages: Stage[]) {
@@ -225,5 +267,40 @@ export class StagesManagementService {
             stages.splice(index, 1);
             this.updateStages(stages);
         }
+    }
+
+    deleteSelectedStage(){
+        const stages = [...this.stagesSubject.value];
+        const index = stages.findIndex(s => s.id === this.getSelectedStageId());
+        if (index !== -1) {
+            stages.splice(index, 1);
+            this.updateStages(stages);
+        }
+        this.selectedStageSubject.next(null);
+    }
+
+    deleteDay(day: number){
+        const stages = [...this.stagesSubject.value];
+
+
+        //Delete all stages with that day
+        for(let i = stages.length - 1; i >= 0; i--){
+            if(stages[i].day == day){
+                stages.splice(i, 1);
+            }
+        }
+
+        //Decrement the day attribute of all the other stages
+        for(let i = stages.length - 1; i >= 0; i--){
+            if(stages[i].day > day){
+                stages[i].day -= 1;
+            }
+        }
+
+
+        this.updateStages(stages);
+
+        const tripLength = this.getTripLength() - 1;
+        this.setTripLength(tripLength);
     }
 }

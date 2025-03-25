@@ -31,48 +31,61 @@ export class MapDisplayComponent {
     constructor(private directionsService: MapDirectionsService) {}
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log(this.stage);
-
 
         if (changes['previewCoordinates']) {
             this.handlePreviewCoordinates(this.previewCoordinates);
         }
-        else{
 
-            const waypoints = this.getWaypoints();
+        this.handleStageChanges();
+    }
 
-            if(this.stage?.isRoute!=this.isRoute || !this.sameWaypoints(this.waypoints, waypoints)){
-                this.waypoints = waypoints;
-                this.isRoute = this.stage?.isRoute;
+    handleStageChanges(){
+        const waypoints = this.getWaypoints();
 
-                const waypointsLocations = this.getLocations(waypoints);
+        let rerender = false;
 
-                if (waypointsLocations.length === 0) {
-                    this.directionsResult = undefined;
-                    this.markerPositions = [];
-                    this.center = { lat: 0, lng: 0 };
-                    this.zoom = 3;
-                    this.panToIfReady(this.center);
+        //Re-render only if something has changed
+        if(this.stage?.isRoute!=this.isRoute){
+            this.isRoute = this.stage?.isRoute;
+            rerender = true;
+        }
+
+        if(!this.sameWaypoints(this.waypoints, waypoints)){
+            this.waypoints = [... waypoints];
+            rerender = true;
+        }
+
+        if(rerender){
+            const waypointsLocations = this.getLocations(waypoints);
+
+
+            if (waypointsLocations.length === 0) {
+                this.directionsResult = undefined;
+                this.markerPositions = [];
+                this.center = { lat: 0, lng: 0 };
+                this.zoom = 3;
+                this.map.googleMap!.setZoom(3);
+                this.panToCenterIfReady();
+            }
+            else{
+                if(this.stage?.isRoute){
+                    //If isRoute is true but the stage has only one waypoint, go to that waypoint
+                    if (waypointsLocations.length === 1) {
+                        this.goToRouteStart(waypointsLocations[0]);
+                    } else if (waypointsLocations.length > 1) {
+                        this.getDirections(waypointsLocations);
+                    }
                 }
                 else{
-                    if(this.stage?.isRoute){
-                        if (waypointsLocations.length === 1) {
-                            this.goToLocation(waypointsLocations[0]);
-                        } else if (waypointsLocations.length > 1) {
-                            this.getDirections(waypointsLocations);
-                        }
-                    }
-                    else{
-                        this.directionsResult = undefined;
-                        this.markerPositions = waypointsLocations;
-                    }
+                    this.directionsResult = undefined;
+                    this.markerPositions = waypointsLocations;
+                    this.panToMarkers();
                 }
             }
-
-
         }
 
     }
+
 
 
     handlePreviewCoordinates(coords: { lat: number; lng: number } | undefined) {
@@ -81,33 +94,81 @@ export class MapDisplayComponent {
             this.previewMarkerPosition = new google.maps.LatLng(coords.lat, coords.lng);
             this.center = { lat: coords.lat, lng: coords.lng };
             this.zoom = 15;
-            this.panToIfReady(this.center);
-        } else if (this.markerPositions) {
-            this.center = { lat: this.markerPositions[this.markerPositions.length - 1].lat(), lng: this.markerPositions[this.markerPositions.length - 1].lng() };
+            this.panToCenterIfReady();
+        }
+        else {
             this.zoom = 15;
-            this.panToIfReady(this.center);
-        } else if (this.getLocations(this.getWaypoints()).length > 0) {
-            const firstLocation = this.getLocations(this.getWaypoints())[0];
-            this.center = { lat: firstLocation.lat(), lng: firstLocation.lng() };
-            this.zoom = 15;
-            this.panToIfReady(this.center);
-        } else {
-            this.center = { lat: 0, lng: 0 };
-            this.zoom = 3;
-            this.panToIfReady(this.center);
+            if (this.markerPositions.length > 0) {
+                this.panToMarkers();
+
+            } else if (this.getLocations(this.getWaypoints()).length > 0) //effectively a route
+            {
+
+                //Pan to last waypoint of route to continue planning the route
+                const locations = this.getLocations(this.getWaypoints());
+                const lastLocation = locations[locations.length - 1];
+                this.center = { lat: lastLocation.lat(), lng: lastLocation.lng() };
+                this.panToCenterIfReady();
+
+            }else {
+                this.center = { lat: 0, lng: 0 };
+                this.zoom = 3;
+                this.panToCenterIfReady();
+            }
         }
     }
 
-    goToLocation(location: google.maps.LatLng) {
+    goToRouteStart(location: google.maps.LatLng) {
         this.markerPositions.push(location);
         this.previewMarkerPosition = undefined;
-        this.center = { lat: location.lat(), lng: location.lng() };
-        this.zoom = 15;
         this.directionsResult = undefined;
-        this.panToIfReady(this.center);
+        this.goToLocation(location);
     }
 
+    goToLocation(location: google.maps.LatLng){
+        this.center = { lat: location.lat(), lng: location.lng() };
+        this.zoom = 10;
+        this.panToCenterIfReady();
+    }
+
+    panToMarkers(){
+        if (this.map.googleMap && this.markerPositions.length > 0) {
+            if (this.markerPositions.length === 1) {
+                // Single marker: set center and a fixed zoom
+                const position = this.markerPositions[0];
+                this.center = {
+                    lat: position.lat(),
+                    lng: position.lng()
+                };
+                this.zoom = 10; // Matches your goToLocation zoom, adjust as needed
+                this.map.googleMap.setZoom(this.zoom);
+                this.map.panTo(this.center);
+            } else {
+                // Multiple markers: fit all within bounds
+                const bounds = new google.maps.LatLngBounds();
+                this.markerPositions.forEach(position => {
+                    bounds.extend(position);
+                });
+                this.map.googleMap.fitBounds(bounds);
+                this.center = {
+                    lat: bounds.getCenter().lat(),
+                    lng: bounds.getCenter().lng()
+                };
+                // Optional: Add padding for better framing
+                // this.map.googleMap.fitBounds(bounds, { padding: 50 });
+            }
+            this.panToCenterIfReady(); // Ensure smooth transition
+        } else if (this.map.googleMap) {
+            // No markers: reset to default
+            this.center = {lat: 0, lng: 0};
+            this.zoom = 3;
+            this.panToCenterIfReady();
+        }
+    }
+
+
     getWaypoints(): Waypoint[]{
+        console.log(this.stage?.waypoints);
         return this.stage?.waypoints || [];
     }
 
@@ -115,9 +176,10 @@ export class MapDisplayComponent {
         if (!waypoints) {
             return [];
         }
+
         return waypoints
             .filter((waypoint) => waypoint.latitude !== undefined && waypoint.longitude !== undefined)
-            .map((waypoint) => new google.maps.LatLng(waypoint.latitude, waypoint.longitude)); // Now guaranteed to be google.maps.LatLng and not undefined
+            .map((waypoint: Waypoint) => new google.maps.LatLng(waypoint.latitude, waypoint.longitude)); // Now guaranteed to be google.maps.LatLng and not undefined
     }
 
 
@@ -140,9 +202,6 @@ export class MapDisplayComponent {
             this.directionsResult = result;
             this.markerPositions = [];
             this.previewMarkerPosition = undefined;
-            this.center = { lat: waypoints[0].lat(), lng: waypoints[0].lng() }; // Center on first waypoint
-            this.zoom = 12; // Adjust zoom for directions
-            this.panToIfReady(this.center);
         });
     }
 
@@ -160,7 +219,7 @@ export class MapDisplayComponent {
         });
     }
 
-    private panToIfReady(center: google.maps.LatLngLiteral) {
+    private panToCenterIfReady() {
         if (this.map.googleMap) {
             this.map.panTo(this.center); // Use panTo for smooth transition
         } else {

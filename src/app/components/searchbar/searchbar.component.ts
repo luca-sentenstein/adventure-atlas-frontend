@@ -13,7 +13,7 @@ import { PlaceAutocompleteComponent } from '../place-autocomplete/place-autocomp
 })
 export class SearchbarComponent {
     @ViewChild("autocompleteInputField") autocompleteInputField!: PlaceAutocompleteComponent;
-    @Output() newCoordinates = new EventEmitter<{ lat: number; lng: number } | undefined>();
+    @Output() newPreviewCoordinates = new EventEmitter<{ lat: number; lng: number } | undefined>();
 
     searchResult: PlaceSearchResult | undefined;
 
@@ -27,6 +27,7 @@ export class SearchbarComponent {
             this.stagesService.addNewWaypoint(this.searchResult.name, this.searchResult.location?.lat(), this.searchResult.location?.lng());
             this.searchResult = undefined;
             this.autocompleteInputField.resetValue();
+            this.newPreviewCoordinates.emit(undefined);
         }
     }
 
@@ -38,9 +39,9 @@ export class SearchbarComponent {
                 lat: result.location.lat(),
                 lng: result.location.lng()
             };
-            this.newCoordinates.emit(coords);
+            this.newPreviewCoordinates.emit(coords);
         } else {
-            this.newCoordinates.emit(undefined);
+            this.newPreviewCoordinates.emit(undefined);
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Stage } from '../../interfaces/stage';
 import { StagesManagementService } from '../../services/stages-management.service';
 import { DatePipe } from '@angular/common';
@@ -14,9 +14,6 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './edit-section.component.scss'
 })
 export class EditSectionComponent {
-    @Input() tripID!: number;
-
-
     stage: Stage | null = null;
 
 
@@ -51,5 +48,9 @@ export class EditSectionComponent {
         }
     }
 
-    //Todo: Delete Stages and Points
+    protected deleteStage() {
+        if (this.stage) {
+            this.stagesService.deleteStage(this.stage);
+        }
+    }
 }

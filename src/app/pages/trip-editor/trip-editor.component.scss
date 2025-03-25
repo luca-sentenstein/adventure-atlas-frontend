@@ -38,8 +38,8 @@
 .waypoints-list {
     position: absolute;
     left: 2rem;
-    top: 2rem;
-    bottom: 2rem;
+    top: 4rem;
+    bottom: 4rem;
     z-index: 10;
 
     //Define background here to have a smooth animation
@@ -51,7 +51,7 @@
     width: 350px;
 }
 
-app-searchbar{
+#searchbar{
     position: absolute;
     top: 2rem;
     width: 400px;
@@ -63,6 +63,22 @@ app-searchbar{
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px;
+}
+
+#day-panel{
+    position: absolute;
+    bottom: 2rem;
+    width: 80%;
+    //height: 10vh;
+    z-index: 10;
+
+
+    //Define background here to have a smooth animation
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
 }
 
 .map {

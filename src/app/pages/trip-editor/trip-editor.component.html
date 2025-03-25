@@ -7,16 +7,16 @@
             [stage]="selectedStage">
         </app-waypoints-list>
         <div class="map">
-            <app-searchbar (newCoordinates)="onPreviewCoordinates($event)" [@fadeInOutUp]="selectedStage ? 'visible' : 'hidden'"></app-searchbar>
+            <app-searchbar id="searchbar" (newPreviewCoordinates)="onPreviewCoordinates($event)" [@fadeInOutUp]="selectedStage ? 'visible' : 'hidden'"></app-searchbar>
             <app-map-display
                 [stage]="selectedStage"
                 [previewCoordinates]="previewCoordinates">
             </app-map-display>
+            <app-day-panel id="day-panel" [@fadeInOutDown]="stagesService.getSelectedDay() ? 'visible' : 'hidden'"></app-day-panel>
         </div>
         <app-edit-section
             class="edit-section"
-            [@fadeInOutRight]="selectedStage ? 'visible' : 'hidden'"
-            [tripID]="0">
+            [@fadeInOutRight]="selectedStage ? 'visible' : 'hidden'">
         </app-edit-section>
     </div>
 </div>

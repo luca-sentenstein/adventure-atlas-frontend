@@ -8,9 +8,9 @@ a {
     color: #FEFEFE;
     background-color: #3B9FFD;
     border-radius: 50px;
+    transition: background-color 0.25s ease-in-out;
 
     &:hover {
         background-color: #0071e3;
-        transition: background-color 0.25s ease-in-out;
     }
 }

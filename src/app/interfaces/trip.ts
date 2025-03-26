@@ -1,15 +1,26 @@
-import { Owner } from './owner';
+import { User } from './user';
 import { TripStage } from './trip-stage';
+import { TripAccess } from './trip-access';
 
 export interface Trip {
     id: number;
     createdAt: Date;
     updatedAt: Date;
-    owner: Owner;
+    owner: User;
     title: string;
     subtitle: string;
     description: string;
-    image: string;
+    image: string | ArrayBuffer | null | undefined;
     public: boolean;
+    startDate: Date;
     stages: TripStage[];
+    tripAccesses: TripAccess[];
+}
+
+export interface TripCreate {
+    title: string;
+    subtitle: string;
+    description: string;
+    public: boolean;
+    startDate: Date;
 }

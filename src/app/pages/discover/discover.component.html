@@ -1,6 +1,6 @@
 <main>
-    <ng-container *ngIf="trips$ | async as trips; else noTrips">
-        <ng-container *ngFor="let trip of trips;">
+    <ng-container *ngIf="(trips$ | async)!.length > 0; else noTrips">
+        <ng-container *ngFor="let trip of (trips$ | async);">
             <app-trip-card [trip]="trip"></app-trip-card>
         </ng-container>
     </ng-container>

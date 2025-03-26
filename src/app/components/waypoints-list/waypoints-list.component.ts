@@ -207,6 +207,15 @@ export class WaypointsListComponent {
         }
     }
 
+    updateWaypoint(index: number, waypoint: Waypoint): void {
+        this.stagesService.updateWaypoint(
+            index,
+            waypoint.name,
+            waypoint.lat,
+            waypoint.lng
+        );
+    }
+
     private updateStyles() {
         const preview = document.querySelector('.cdk-drag-preview') as HTMLElement;
         if (preview) {

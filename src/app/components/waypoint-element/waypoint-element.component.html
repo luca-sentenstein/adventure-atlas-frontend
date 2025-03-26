@@ -1,3 +1,13 @@
-<div class="element" *ngIf="waypoint">
-    <h2>{{waypoint.name}}</h2>
+<div #elementContainer class="element"
+     *ngIf="waypoint"
+     (click)="onBoxClick($event)"
+     (mouseenter)="onMouseEnter()"
+     (mouseleave)="onMouseLeave()">
+    <h2
+        #editableName
+        (input)="onInput($event)"
+        (blur)="onBlur()"
+        (keydown)="onKeyDown($event)"
+        class="editable-name">
+    </h2>
 </div>

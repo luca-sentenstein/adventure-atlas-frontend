@@ -12,10 +12,18 @@
     cursor: grab;
 }
 
-h2{
+.editable-name {
     margin: 0;
+    padding: 0;
+    outline: none;
+    pointer-events: auto;// Ensure clicks register
+
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 90%;
+
+    &:focus {
+        border-bottom: 1px dashed #666;
+    }
 }

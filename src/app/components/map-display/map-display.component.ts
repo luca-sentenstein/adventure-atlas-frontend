@@ -1,9 +1,10 @@
-import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
-import {GoogleMap, GoogleMapsModule, MapDirectionsService} from '@angular/google-maps';
-import {map} from "rxjs";
-import {NgIf} from "@angular/common";
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { GoogleMap, GoogleMapsModule, MapDirectionsService } from '@angular/google-maps';
+import { map } from "rxjs";
+import { NgIf } from "@angular/common";
 import { Waypoint } from '../../interfaces/waypoint';
-import { Stage } from '../../interfaces/stage';
+import { TripStage } from '../../interfaces/trip-stage';
+import MapTypeControlStyle = google.maps.MapTypeControlStyle;
 
 @Component({
   selector: 'app-map-display',
@@ -11,14 +12,24 @@ import { Stage } from '../../interfaces/stage';
   templateUrl: './map-display.component.html',
   styleUrl: './map-display.component.scss',
 })
-export class MapDisplayComponent {
+export class MapDisplayComponent implements OnChanges {
     @ViewChild("map", {static: true}) map!: GoogleMap;
 
-    @Input() stage!: Stage | null;
+    @Input() stage!: TripStage | null;
     @Input() previewCoordinates: { lat: number; lng: number } | undefined;
 
     center: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
     zoom = 3;
+    mapOptions: google.maps.MapOptions = {
+        streetViewControl: false,
+        cameraControl: false,
+        //mapTypeControl: false,
+        mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_LEFT, // Change position
+            style: MapTypeControlStyle.HORIZONTAL_BAR,
+            mapTypeIds: ["roadmap", "satellite"] // Hide terrain submenu
+        }
+    }
 
     directionsResult: google.maps.DirectionsResult | undefined;
 
@@ -45,8 +56,8 @@ export class MapDisplayComponent {
         let rerender = false;
 
         //Re-render only if something has changed
-        if(this.stage?.isRoute!=this.isRoute){
-            this.isRoute = this.stage?.isRoute;
+        if(this.stage?.displayRoute!=this.isRoute){
+            this.isRoute = this.stage?.displayRoute;
             rerender = true;
         }
 
@@ -68,7 +79,7 @@ export class MapDisplayComponent {
                 this.panToCenterIfReady();
             }
             else{
-                if(this.stage?.isRoute){
+                if(this.stage?.displayRoute){
                     //If isRoute is true but the stage has only one waypoint, go to that waypoint
                     if (waypointsLocations.length === 1) {
                         this.goToRouteStart(waypointsLocations[0]);
@@ -168,7 +179,6 @@ export class MapDisplayComponent {
 
 
     getWaypoints(): Waypoint[]{
-        console.log(this.stage?.waypoints);
         return this.stage?.waypoints || [];
     }
 
@@ -178,8 +188,8 @@ export class MapDisplayComponent {
         }
 
         return waypoints
-            .filter((waypoint) => waypoint.latitude !== undefined && waypoint.longitude !== undefined)
-            .map((waypoint: Waypoint) => new google.maps.LatLng(waypoint.latitude, waypoint.longitude)); // Now guaranteed to be google.maps.LatLng and not undefined
+            .filter((waypoint) => waypoint.lat !== undefined && waypoint.lng !== undefined)
+            .map((waypoint: Waypoint) => new google.maps.LatLng(waypoint.lat, waypoint.lng)); // Now guaranteed to be google.maps.LatLng and not undefined
     }
 
 
@@ -213,8 +223,8 @@ export class MapDisplayComponent {
             return (
                 waypoint1.id == waypoint2.id &&
                 waypoint1.name == waypoint2.name &&
-                waypoint1.latitude == waypoint2.latitude &&
-                waypoint1.longitude == waypoint2.longitude
+                waypoint1.lat == waypoint2.lat &&
+                waypoint1.lng == waypoint2.lng
             );
         });
     }
@@ -222,9 +232,6 @@ export class MapDisplayComponent {
     private panToCenterIfReady() {
         if (this.map.googleMap) {
             this.map.panTo(this.center); // Use panTo for smooth transition
-        } else {
-            console.warn('googleMap not available, using center binding');
-            // Fallback to center binding if googleMap is not ready
         }
     }
 }

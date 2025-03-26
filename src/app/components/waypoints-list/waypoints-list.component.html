@@ -6,12 +6,13 @@
     <div class="header">
         <h2>Waypoints</h2>
     </div>
-    <div class="waypoints-list" #dropList>
+    <div class="waypoints-list">
         <div class="spacer"></div>
-        @for (waypoint of waypoints; track waypoint.id) {
+        @for (waypoint of waypoints; track waypoint) {
             <div class="drag-item"
                  cdkDrag
                  #itemElem
+                 [cdkDragDisabled]="!stagesService.hasWriteAccess()"
                  [@fadeMove]="skipEnterAnimation ? null : 'enter'"
                  [cdkDragData]="waypoint"
                  (cdkDragMoved)="dragMoved($event)"

@@ -40,12 +40,6 @@
     justify-content: center;
 }
 
-.autocomplete-group{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
-}
 
 .attribute{
     display: flex;
@@ -147,11 +141,6 @@ textarea:focus {
     color: #555;
 }
 
-/* Toggle Switch Styles */
-.toggle-group {
-    flex-direction: row;
-    align-items: center;
-}
 
 .switch {
     position: relative;

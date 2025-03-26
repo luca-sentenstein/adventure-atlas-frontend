@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Stage } from '../../interfaces/stage';
+import { TripStage } from '../../interfaces/trip-stage';
 import { StagesManagementService } from '../../services/stages-management.service';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -9,16 +9,17 @@ import { FormsModule } from '@angular/forms';
     imports: [
         DatePipe,
         FormsModule,
+        NgIf,
     ],
   templateUrl: './edit-section.component.html',
   styleUrl: './edit-section.component.scss'
 })
 export class EditSectionComponent {
-    stage: Stage | null = null;
+    stage: TripStage | null = null;
 
 
 
-    constructor(private stagesService: StagesManagementService) {
+    constructor(protected stagesService: StagesManagementService) {
         this.stagesService.selectedStage$.subscribe(stage => {
             this.stage = stage; // Update stage when selection changes
         });
@@ -29,10 +30,11 @@ export class EditSectionComponent {
     updateStage() {
         if (this.stage) {
             this.stagesService.updateStage(this.stage);
+            this.stagesService.updateStageBackend(this.stage);
         }
     }
 
-    updateTime(field: 'startTime' | 'endTime', event: Event) {
+    updateTime(field: 'start' | 'end', event: Event) {
         if (!this.stage) return;
         const input = event.target as HTMLInputElement;
         const timeValue = input.value; // Format: "HH:mm"

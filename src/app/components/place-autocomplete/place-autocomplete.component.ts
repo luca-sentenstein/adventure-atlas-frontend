@@ -1,7 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, NgZone, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, NgZone, Output, ViewChild } from '@angular/core';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { PlaceSearchResult } from '../../interfaces/place-search-result';
-import { Waypoint } from '../../interfaces/waypoint';
 
 @Component({
   selector: 'app-place-autocomplete',
@@ -9,10 +8,11 @@ import { Waypoint } from '../../interfaces/waypoint';
   templateUrl: './place-autocomplete.component.html',
   styleUrl: './place-autocomplete.component.scss'
 })
-export class PlaceAutocompleteComponent {
+export class PlaceAutocompleteComponent implements AfterViewInit {
     @ViewChild("inputField") inputField!: ElementRef;
 
     @Input() placeholder = ""
+    @Input() writeAccess!: boolean;
 
     @Output() newSearchResult = new EventEmitter<PlaceSearchResult>();
 

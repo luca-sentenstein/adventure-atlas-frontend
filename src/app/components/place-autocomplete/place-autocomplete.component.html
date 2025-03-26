@@ -1,8 +1,10 @@
 <div class="autocomplete-container">
     <input
         #inputField
+        class="input-field"
         type="text"
         [placeholder]="placeholder || 'Search for a place...'"
         (input)="onInputChange()"
+        [class.noButton]="!writeAccess"
     />
 </div>

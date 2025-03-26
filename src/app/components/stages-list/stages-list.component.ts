@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgIf } from '@angular/common';
-import { Stage } from '../../interfaces/stage';
+import { TripStage } from '../../interfaces/trip-stage';
 import { StagesListDayComponent } from '../stages-list-day/stages-list-day.component';
 import { StagesManagementService } from '../../services/stages-management.service';
 
@@ -58,12 +58,12 @@ export class StagesListComponent {
         this.showOptions = false; // Close the dropdown after selection
     }
 
-    onStageReordered(event: { movedStage: Stage; newDay: number; newIndex: number }) {
+    onStageReordered(event: { movedStage: TripStage; newDay: number; newIndex: number }) {
         this.stagesService.reorderStage(event.movedStage, event.newDay, event.newIndex);
         console.log(event);
     }
 
-    onStageDeleted(event: { deletedStage: Stage }) {
+    onStageDeleted(event: { deletedStage: TripStage }) {
         this.stagesService.deleteStage(event.deletedStage);
     }
 

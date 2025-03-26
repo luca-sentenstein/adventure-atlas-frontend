@@ -7,37 +7,37 @@
         <div class="content-wrapper">
             <div class="attribute">
                 <label for="title">Title:</label>
-                <input id="title" type="text" [(ngModel)]="stage.title" (ngModelChange)="updateStage()" placeholder="Stage Title" />
+                <input id="title" type="text" [disabled]="!stagesService.hasWriteAccess()" [(ngModel)]="stage.title" (ngModelChange)="updateStage()" placeholder="Stage Title" />
             </div>
             <div class="attribute">
                 <label for="description">Description:</label>
-                <textarea id="description" [(ngModel)]="stage.description" (ngModelChange)="updateStage()" placeholder="Stage Description"></textarea>
+                <textarea id="description" [disabled]="!stagesService.hasWriteAccess()" [(ngModel)]="stage.description" (ngModelChange)="updateStage()" placeholder="Stage Description"></textarea>
             </div>
             <div class="group">
                 <div class="attribute">
                     <label for="startTime">Start Time:</label>
-                    <input id="startTime" type="time" step="300" [value]="stage.startTime | date:'HH:mm'" (input)="updateTime('startTime', $event)"/>
+                    <input id="startTime" [disabled]="!stagesService.hasWriteAccess()" type="time" step="300" [value]="stage.start | date:'HH:mm'" (input)="updateTime('start', $event)"/>
                 </div>
                 <div class="attribute">
                     <label for="endTime">End Time:</label>
-                    <input id="endTime" type="time" step="300" [value]="stage.endTime | date:'HH:mm'" (input)="updateTime('endTime', $event)"/>
+                    <input id="endTime" [disabled]="!stagesService.hasWriteAccess()" type="time" step="300" [value]="stage.end | date:'HH:mm'" (input)="updateTime('end', $event)"/>
                 </div>
             </div>
             <div class="cost-group">
                 <!--<label for="cost">Cost:</label>-->
-                <input id="cost" type="number" [(ngModel)]="stage.cost" (ngModelChange)="updateStage()" placeholder="0"/>
+                <input id="cost" [disabled]="!stagesService.hasWriteAccess()" type="number" [(ngModel)]="stage.cost" (ngModelChange)="updateStage()" placeholder="0"/>
                 <span class="currency-symbol">€</span>
             </div>
             <div class="group">
                 <label for="isRoute">Calculate Route:</label>
                 <label class="switch">
-                    <input id="isRoute" type="checkbox" [(ngModel)]="stage.isRoute" (ngModelChange)="updateStage()" />
+                    <input id="isRoute" [disabled]="!stagesService.hasWriteAccess()" type="checkbox" [(ngModel)]="stage.displayRoute" (ngModelChange)="updateStage()" />
                     <span class="slider round"></span>
                 </label>
             </div>
         </div>
         <div class="group">
-            <button id="deleteButton" (click)="deleteStage()">Delete</button>
+            <button *ngIf="stagesService.hasWriteAccess()" id="deleteButton" (click)="deleteStage()">Delete</button>
         </div>
     }
 </div>

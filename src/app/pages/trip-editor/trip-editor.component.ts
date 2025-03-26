@@ -5,7 +5,7 @@ import { MapDisplayComponent } from '../../components/map-display/map-display.co
 import { WaypointsListComponent } from '../../components/waypoints-list/waypoints-list.component';
 import { StagesListComponent } from '../../components/stages-list/stages-list.component';
 import { StagesManagementService } from '../../services/stages-management.service';
-import { Stage } from '../../interfaces/stage';
+import { TripStage } from '../../interfaces/trip-stage';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SearchbarComponent } from '../../components/searchbar/searchbar.component';
 import { DayPanelComponent } from '../../components/day-panel/day-panel.component';
@@ -95,7 +95,7 @@ import { DayPanelComponent } from '../../components/day-panel/day-panel.componen
     ]
 })
 export class TripEditorComponent {
-    selectedStage: Stage | null = null;
+    selectedStage: TripStage | null = null;
 
     constructor(protected stagesService: StagesManagementService) {
         this.stagesService.selectedStage$.subscribe(stage => {

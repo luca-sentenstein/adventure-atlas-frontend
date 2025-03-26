@@ -2,11 +2,13 @@ import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { PlaceSearchResult } from '../../interfaces/place-search-result';
 import { StagesManagementService } from '../../services/stages-management.service';
 import { PlaceAutocompleteComponent } from '../place-autocomplete/place-autocomplete.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-searchbar',
     imports: [
-        PlaceAutocompleteComponent
+        PlaceAutocompleteComponent,
+        NgIf
     ],
   templateUrl: './searchbar.component.html',
   styleUrl: './searchbar.component.scss'
@@ -18,7 +20,7 @@ export class SearchbarComponent {
     searchResult: PlaceSearchResult | undefined;
 
 
-    constructor(private stagesService: StagesManagementService) {}
+    constructor(protected stagesService: StagesManagementService) {}
 
     addWaypoint() {
         if (this.searchResult) {

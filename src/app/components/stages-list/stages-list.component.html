@@ -12,7 +12,7 @@
             <div class="option" (click)="addNewDay()">Add day</div>
         </div>
     </div>
-    <div class="add-button">
+    <div *ngIf="stagesService.hasWriteAccess()" class="add-button">
         <button (mouseenter)="openOptions()" (mouseleave)="closeOptions()">+</button>
     </div>
 </div>

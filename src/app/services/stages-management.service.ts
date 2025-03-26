@@ -1,36 +1,47 @@
 import { Injectable } from '@angular/core';
-import { Stage } from '../interfaces/stage';
+import { TripStage } from '../interfaces/trip-stage';
 import { Waypoint } from '../interfaces/waypoint';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Trip } from '../interfaces/trip';
+import { BASE_URL } from '../../constants';
+import { Router } from '@angular/router';
+import { TripStageCreate } from '../interfaces/trip-stage';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StagesManagementService {
-    private stagesSubject = new BehaviorSubject<Stage[]>([
-        { id: 1, title: 'Item 1', startTime: new Date(), endTime: new Date(), day: 1, waypoints: [], idCounter: 0, isRoute: false, description: "", cost: 0 },
-        { id: 2, title: 'Item 2', startTime: undefined, endTime: undefined, day: 1, waypoints: [], idCounter: 0, isRoute: true, description: "", cost: 100 },
-        { id: 3, title: 'Item 3', startTime: undefined, endTime: undefined, day: 2, waypoints: [], idCounter: 0, isRoute: false, description: "", cost: 234 },
-        { id: 4, title: 'Item 4', startTime: new Date(), endTime: undefined, day: 3, waypoints: [], idCounter: 0, isRoute: false, description: "", cost: 69 },
-    ]);
+    private stagesSubject = new BehaviorSubject<TripStage[]>([]);
     stages$ = this.stagesSubject.asObservable();
 
     private tripLengthSubject = new BehaviorSubject<number>(3); // Will be set based on backend
     tripLength$ = this.tripLengthSubject.asObservable();
 
-    private selectedStageSubject = new BehaviorSubject<Stage | null>(null); // Track selected stage
+    private selectedStageSubject = new BehaviorSubject<TripStage | null>(null); // Track selected stage
     selectedStage$ = this.selectedStageSubject.asObservable();
 
     private selectedDaySubject = new BehaviorSubject<number | null>(null); // Track selected day
     selectedDay$ = this.selectedDaySubject.asObservable();
 
-    private startDateSubject = new BehaviorSubject<Date | null>(new Date(1999, 4, 20)); // Track trip start day
+    private startDateSubject = new BehaviorSubject<Date>(new Date(1999, 4, 20)); // Track trip start day
     startDate$ = this.startDateSubject.asObservable();
 
-    private idCounter = 4;
+    private writeAccessSubject = new BehaviorSubject<boolean>(true);
+    writeAccessSubject$ = this.writeAccessSubject.asObservable();
 
-    getStages(): Stage[] {
+
+    constructor(private http: HttpClient, private router: Router, private authService: AuthService) {
+        this.fetchTripBackend();
+    }
+
+    getStages(): TripStage[] {
         return this.stagesSubject.value;
+    }
+
+    hasWriteAccess(): boolean {
+        return this.writeAccessSubject.value;
     }
 
     getTripLength(): number {
@@ -43,76 +54,165 @@ export class StagesManagementService {
 
     setTripLength(length: number) {
         this.tripLengthSubject.next(length);
+        this.updateTripLengthBackend(length);
     }
 
     getSelectedStage(){
         return this.selectedStageSubject.value;
     }
 
-
-    // Placeholder for backend fetch (to be implemented later)
-    fetchTripLengthFromBackend(): Promise<number> {
-        // Simulate backend call (replace with actual API call)
-        return new Promise(resolve => {
-            setTimeout(() => resolve(5), 1000); // Example: returns 5 days
-        });
+    getWaypoints(){
+        return this.selectedStageSubject.value?.waypoints || [];
     }
 
-    //getUniqueDays(): number[] {
-    //    const days = new Set<number>();
-    //    this.stagesSubject.value.forEach(stage => {
-    //        if (stage.day !== undefined) //Because stage.day can be undefined, we have to filter out these values
-    //        {
-    //            days.add(stage.day);
-    //        }
-    //    });
-    //    return Array.from(days);
-    //}
+    tripId: number = 5;
 
-    getStagesForDay(day: number): Stage[] {
+    fetchTripBackend() {
+        this.http.get<Trip>(
+            BASE_URL + "/trip/" + this.tripId
+        ).subscribe({
+            next: trip => {
+                trip.stages.sort((a, b) => <number>a.index - <number>b.index);
+                trip.stages.map(stage => {
+                    stage.waypoints.sort((a, b) => <number>a.index - <number>b.index);
+                })
+                this.stagesSubject.next(trip.stages);
+                this.tripLengthSubject.next(trip.length);
+                const owner = trip.owner.id === this.authService.getUser()?.id;
+                const access = trip.tripAccesses.find(access => access.user.id === this.authService.getUser()?.id);
+                this.writeAccessSubject.next(owner || access?.accessLevel === "write");
+                this.startDateSubject.next(trip.startDate);
+            },
+            error: error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip with id " + this.tripId + " not found");
+                } else {
+                    alert(error.message);
+                }
+                void this.router.navigate(["/trips"]);
+            }
+        })
+    }
+
+
+    getStagesForDay(day: number): TripStage[] {
         return this.stagesSubject.value.filter(stage => stage.day === day) || [];
+    }
+
+    addStageBackend(stage: TripStageCreate): Observable<TripStage> {
+        return this.http.post<TripStage>(
+            BASE_URL + "/trip/" + this.tripId + "/newStage",
+            stage
+        ).pipe(
+            catchError(error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip with id " + this.tripId + " not found");
+                } else {
+                    alert(error.message);
+                }
+                return Promise.reject(error);
+            })
+        )
+    }
+
+    reorderStagesBackend(ids: number[], indices: number[]) {
+        for (let i = 0; i < ids.length; i++) {
+            this.http.patch(
+                BASE_URL + "/trip/" + this.tripId + "/stages/" + ids[i],
+                {
+                    index: indices[i]
+                }
+            ).subscribe({
+                error: error => {
+                    if (error.status === 401) {
+                        alert("You don't have access to edit this trip.");
+                    } else if (error.status === 404) {
+                        alert("Trip with id " + this.tripId + " not found");
+                    } else {
+                        alert(error.message);
+                    }
+                }
+            })
+        }
     }
 
     addStage(day: number) {
         const stages = [...this.stagesSubject.value];
 
-        const newStage: Stage = {
-            id: ++this.idCounter, // Generate unique ID
-            title: `New Stage (Day ${day})`,
-            startTime: undefined,
-            endTime: undefined,
-            day: day,
-            waypoints: [],
-            idCounter: 0,
-            isRoute: false,
+        let newStage: TripStageCreate = {
+            index: stages.length,
+            title: "New Stage",
             description: "",
-            cost: 0
-        };
+            start: undefined,
+            end: undefined,
+            day: day,
+            displayRoute: false,
+            cost: 0,
+        }
 
-        // Find the starting index of the target day
-        let targetDayStartIndex = 0;
-        while (targetDayStartIndex < stages.length) {
-            if (stages[targetDayStartIndex].day === day) {
-                break;
+        const createdStage = this.addStageBackend(newStage);
+
+
+        createdStage.subscribe({
+            next: stage => {
+                let targetDayStartIndex = 0;
+                while (targetDayStartIndex < stages.length) {
+                    if (stages[targetDayStartIndex].day === day) {
+                        break;
+                    }
+                    targetDayStartIndex++;
+                }
+                // If no stage with targetDay is found, append to the end
+                if (targetDayStartIndex === stages.length) {
+                    targetDayStartIndex = stages.length;
+                }
+
+                // Insert the new stage at the end of the target day's block
+                const targetDayLength = stages.filter(s => s.day === day).length;
+                const globalNewIndex = targetDayStartIndex + targetDayLength;
+
+
+                stages.splice(globalNewIndex, 0, stage);
+
+                this.reorderStagesBackend(this.getIDs(stages), this.getIndices(stages));
+
+                this.stagesSubject.next(stages);
             }
-            targetDayStartIndex++;
-        }
-        // If no stage with targetDay is found, append to the end
-        if (targetDayStartIndex === stages.length) {
-            targetDayStartIndex = stages.length;
-        }
+        })
 
-        // Insert the new stage at the end of the target day's block
-        const targetDayLength = stages.filter(s => s.day === day).length;
-        const globalNewIndex = targetDayStartIndex + targetDayLength;
-
-        stages.splice(globalNewIndex, 0, newStage);
-        this.stagesSubject.next(stages);
     }
+
+
 
     addNewDay() {
         const currentLength = this.tripLengthSubject.value;
-        this.tripLengthSubject.next(currentLength + 1); // Increment tripLength
+        this.setTripLength(currentLength + 1);  // Increment tripLength
+    }
+
+
+    patchWaypointsBackend(stage: TripStage){
+        for (let i = 0; i < stage.waypoints.length; i++) {
+            stage.waypoints[i].index = i;
+        }
+
+        this.http.post(
+            BASE_URL + "/trip/" + this.tripId + "/stages/" + stage.id + "/locations",
+            stage.waypoints
+        ).subscribe({
+            error: error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip with id " + this.tripId + " not found");
+                } else {
+                    alert(error.message);
+                }
+            }
+        })
     }
 
     addNewWaypoint(name: string | undefined, latitude: number | undefined, longitude: number | undefined) {
@@ -128,16 +228,22 @@ export class StagesManagementService {
         }
 
         const waypoint: Waypoint = {
-            id: ++stage.idCounter,
+            id: undefined, //Placeholder,
+            index: undefined,
+            createdAt: undefined,
+            updatedAt: undefined,
             name: name,
-            latitude: latitude, //Todo: Should be invalid if the location has no lat or lng
-            longitude: longitude,
+            lat: latitude, //Todo: Should be invalid if the location has no lat or lng
+            lng: longitude,
         };
 
         stage.waypoints.push(waypoint);
 
+        this.patchWaypointsBackend(stage);
+
         this.updateStage(stage);
     }
+
 
     reorderWaypoints(previousIndex: number, currentIndex: number) {
         const stage = this.selectedStageSubject.value;
@@ -156,8 +262,14 @@ export class StagesManagementService {
             waypoints: waypoints
         };
 
+
+
+        this.patchWaypointsBackend(updatedStage);
+
         this.updateStage(updatedStage);
     }
+
+
 
     deleteWaypoint(index: number){
         const stage = this.selectedStageSubject.value;
@@ -167,19 +279,35 @@ export class StagesManagementService {
         }
 
         stage.waypoints.splice(index, 1); // Remove the waypoint
-
         this.updateStage(stage);
+
+
+        this.patchWaypointsBackend(stage);
     }
 
 
 
-    getWaypoints(){
-        return this.selectedStageSubject.value?.waypoints || [];
+
+    updateStageDayBackend(stageID: number, newDay: number){
+        this.http.patch(
+            BASE_URL + "/trip/" + this.tripId + "/stages/" + stageID,
+            {
+                day: newDay,
+            }
+        ).subscribe({
+            error: error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip with id " + this.tripId + " not found");
+                } else {
+                    alert(error.message);
+                }
+            }
+        })
     }
 
-
-
-    reorderStage(movedStage: Stage, newDay: number, newIndex: number) {
+    reorderStage(movedStage: TripStage, newDay: number, newIndex: number) {
         const stages = [...this.stagesSubject.value]; // Create a copy to modify
         const previousDay = movedStage.day;
         if (previousDay === undefined) {
@@ -215,6 +343,10 @@ export class StagesManagementService {
         // Insert the stage at the new position
         stages.splice(globalNewIndex, 0, movedStage);
 
+
+        this.updateStageDayBackend(movedStage.id, movedStage.day);
+        this.reorderStagesBackend(this.getIDs(stages), this.getIndices(stages));
+
         // Emit the updated array
         this.stagesSubject.next(stages);
     }
@@ -237,7 +369,7 @@ export class StagesManagementService {
         return this.selectedDaySubject.value;
     }
 
-    updateStages(newStages: Stage[]) {
+    updateStages(newStages: TripStage[]) {
         this.stagesSubject.next(newStages);
         const currentSelectedId = this.getSelectedStageId();
         if (currentSelectedId !== null) {
@@ -246,8 +378,32 @@ export class StagesManagementService {
     }
 
 
+    //For edit section (maybe with timer?)
+    updateStageBackend(updatedStage: TripStage) {
+        this.http.patch(
+            BASE_URL + "/trip/" + this.tripId + "/stages/" + updatedStage.id,
+            {
+                title: updatedStage.title,
+                description: updatedStage.description,
+                start: updatedStage.start,
+                end: updatedStage.end,
+                cost: updatedStage.cost ? updatedStage.cost : 0,
+                displayRoute: updatedStage.displayRoute
+            }
+        ).subscribe({
+            error: error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip with id " + this.tripId + " not found");
+                } else {
+                    alert(error.message);
+                }
+            }
+        })
+    }
 
-    updateStage(updatedStage: Stage) {
+    updateStage(updatedStage: TripStage) {
         const stages = [...this.stagesSubject.value];
         const index = stages.findIndex(s => s.id === updatedStage.id);
         if (index !== -1) {
@@ -260,24 +416,54 @@ export class StagesManagementService {
         }
     }
 
-    deleteStage(stage: Stage){
+    deleteStageBackend(stageID: number){
+        this.http.delete(
+            BASE_URL + "/trip/" + this.tripId + "/stages/" + stageID,
+        ).subscribe({
+            error: error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip or stage not found");
+                } else {
+                    alert(error.message);
+                }
+            }
+        })
+    }
+
+    deleteStage(stage: TripStage){
         const stages = [...this.stagesSubject.value];
         const index = stages.findIndex(s => s.id === stage.id);
         if (index !== -1) {
             stages.splice(index, 1);
+
+            this.deleteStageBackend(stage.id);
+            this.reorderStagesBackend(this.getIDs(stages), this.getIndices(stages));
+
             this.updateStages(stages);
         }
     }
 
-    deleteSelectedStage(){
-        const stages = [...this.stagesSubject.value];
-        const index = stages.findIndex(s => s.id === this.getSelectedStageId());
-        if (index !== -1) {
-            stages.splice(index, 1);
-            this.updateStages(stages);
-        }
-        this.selectedStageSubject.next(null);
+    updateTripLengthBackend(length: number) {
+        this.http.patch(
+            BASE_URL + "/trip/" + this.tripId,
+            {
+                length: length
+            }
+        ).subscribe({
+            error: error => {
+                if (error.status === 401) {
+                    alert("You don't have access to edit this trip.");
+                } else if (error.status === 404) {
+                    alert("Trip with id " + this.tripId + " not found");
+                } else {
+                    alert(error.message);
+                }
+            }
+        })
     }
+
 
     deleteDay(day: number){
         const stages = [...this.stagesSubject.value];
@@ -286,6 +472,7 @@ export class StagesManagementService {
         //Delete all stages with that day
         for(let i = stages.length - 1; i >= 0; i--){
             if(stages[i].day == day){
+                this.deleteStageBackend(stages[i].id);
                 stages.splice(i, 1);
             }
         }
@@ -294,13 +481,26 @@ export class StagesManagementService {
         for(let i = stages.length - 1; i >= 0; i--){
             if(stages[i].day > day){
                 stages[i].day -= 1;
+                this.updateStageDayBackend(stages[i].id, stages[i].day);
             }
         }
-
 
         this.updateStages(stages);
 
         const tripLength = this.getTripLength() - 1;
         this.setTripLength(tripLength);
+    }
+
+    getIDs(list: TripStage[]): number[] {
+        let IDs: number[] = [];
+        for (const object of list) {
+            IDs.push(object.id);
+        }
+
+        return IDs;
+    }
+
+    getIndices(list: any[]): number[]{
+        return [...Array(list.length).keys()];
     }
 }

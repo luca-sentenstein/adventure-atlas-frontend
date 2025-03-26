@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { StagesManagementService } from '../../services/stages-management.service';
 
@@ -10,13 +10,12 @@ import { StagesManagementService } from '../../services/stages-management.servic
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss'
 })
-export class TimelineComponent {
-    today: Date = new Date();
+export class TimelineComponent implements OnChanges, AfterViewInit{
     days: { day: string; date: string }[] = [];
 
     @ViewChild('timelineContainer') timelineContainer!: ElementRef;
     @Input() highlightDay: number | null = null;
-    @Input() startDate: Date | null = null;
+    @Input() startDate!: Date;
     @Input() tripLength!: number;
 
     isDragging = false;
@@ -44,24 +43,33 @@ export class TimelineComponent {
     }
 
     generateTimeline() {
+        if (!this.startDate) return; // Wait until startDate is available
+
         this.days = Array.from({ length: this.tripLength }, (_, i) => {
-            const date = new Date();
-            date.setDate(this.today.getDate() + i);
+            const newDate = this.addDays(this.startDate, i);
             return {
-                day: this.getWeekday(date.getDay()),
-                date: `${date.getDate()} ${this.getMonthName(date.getMonth())}`,
+                day: this.getWeekday(newDate),
+                date: this.formatDate(newDate),
             };
         });
     }
 
-    getWeekday(dayIndex: number): string {
-        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        return weekdays[dayIndex];
+    addDays(date: Date, days: number): Date {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
     }
 
-    getMonthName(monthIndex: number): string {
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        return months[monthIndex];
+    getWeekday(date: Date): string {
+        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return weekdays[date.getDay()];
+    }
+
+    formatDate(date: Date): string {
+        const day = date.getDate();
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const month = monthNames[date.getMonth()];
+        return `${day} ${month}`;
     }
 
     // 🔹 Scroll with Mouse Wheel

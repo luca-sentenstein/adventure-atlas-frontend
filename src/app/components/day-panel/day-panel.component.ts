@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { StagesManagementService } from '../../services/stages-management.service';
 import { TimelineComponent } from '../timeline/timeline.component';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-day-panel',
     imports: [
-        TimelineComponent
+        TimelineComponent,
+        NgIf
     ],
   templateUrl: './day-panel.component.html',
   styleUrl: './day-panel.component.scss'

@@ -1,9 +1,9 @@
 export interface Waypoint {
-    id: number;
+    id: number | undefined;
     index: number | undefined;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
     name: string;
     lat: number;
-    long: number;
+    lng: number;
 }

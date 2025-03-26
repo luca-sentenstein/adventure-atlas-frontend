@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {WaypointElementComponent} from "../waypoint-element/waypoint-element.component";
 import { Waypoint } from '../../interfaces/waypoint';
-import { Stage } from '../../interfaces/stage';
+import { TripStage } from '../../interfaces/trip-stage';
 import {
     CdkDrag,
     CdkDragDrop, CdkDragMove,
@@ -48,7 +48,7 @@ import {
 export class WaypointsListComponent {
     @ViewChild("listContainer") listContainer!: ElementRef;
     @ViewChildren("itemElem") itemElements!: QueryList<ElementRef>;
-    @Input() stage!: Stage | null;
+    @Input() stage!: TripStage | null;
     isOverTrash = false;
     skipEnterAnimation = false;
 
@@ -186,23 +186,23 @@ export class WaypointsListComponent {
             this.deleteWaypoint(index);
 
             //Re-render all waypoints (there is a problem with the reorder animation after one waypoint has been deleted)
-            //setTimeout(() => {
-            //    this.skipEnterAnimation = true; // Disable enter animation
-            //    const waypoints = this.waypoints;
-            //    this.stage!.waypoints = []; // Clear array to force full re-render
-            //    this.cdr.detectChanges();
-//
-            //    this.stage!.waypoints = waypoints; // Restore items
-            //    this.cdr.detectChanges();
-            //    this.skipEnterAnimation = false;
-            //}, 350);
+            setTimeout(() => {
+                this.skipEnterAnimation = true; // Disable enter animation
+                const waypoints = this.waypoints;
+                this.stage!.waypoints = []; // Clear array to force full re-render
+                this.cdr.detectChanges();
+
+                this.stage!.waypoints = waypoints; // Restore items
+                this.cdr.detectChanges();
+                this.skipEnterAnimation = false;
+            }, 350);
         }
     }
 
     private deleteWaypoint(index: number) {
         if (this.stage && this.waypoints.length > index) {
             //this.stage.waypoints.splice(index, 1);
-           this.stagesService.deleteWaypoint(index);
+            this.stagesService.deleteWaypoint(index);
             this.cdr.detectChanges(); // Force change detection to update the DOM
         }
     }

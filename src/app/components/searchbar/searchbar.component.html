@@ -1,4 +1,4 @@
 <div class="autocomplete-group">
-    <app-place-autocomplete #autocompleteInputField id="autocompleteInput" (newSearchResult)="handleNewSearchResult($event)"></app-place-autocomplete>
-    <button id="add-waypoint-button" (click)="addWaypoint()">Add</button>
+    <app-place-autocomplete #autocompleteInputField [writeAccess]="stagesService.hasWriteAccess()" id="autocompleteInput" (newSearchResult)="handleNewSearchResult($event)"></app-place-autocomplete>
+    <button *ngIf="stagesService.hasWriteAccess()" id="add-waypoint-button" (click)="addWaypoint()">Add</button>
 </div>

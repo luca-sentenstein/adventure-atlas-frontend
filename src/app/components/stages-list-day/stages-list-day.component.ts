@@ -19,7 +19,7 @@ import {
     transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { TripStageElementComponent } from '../trip-stage-element/trip-stage-element.component';
-import { Stage } from '../../interfaces/stage';
+import { TripStage } from '../../interfaces/trip-stage';
 import { animate, AnimationBuilder, style } from '@angular/animations';
 import { StagesManagementService } from '../../services/stages-management.service';
 
@@ -36,17 +36,17 @@ import { StagesManagementService } from '../../services/stages-management.servic
 })
 export class StagesListDayComponent {
     @Input() containerRef!: HTMLDivElement
-    @Input() localStages: Stage[] = [];
+    @Input() localStages: TripStage[] = [];
     @ViewChild("listElem") listElement!: ElementRef;
     @ViewChildren("itemElem") itemElements!: QueryList<ElementRef>;
     @Input() day!: number; // Add day input to determine the target day
     @Output() stageReordered = new EventEmitter<{
-        movedStage: Stage;
+        movedStage: TripStage;
         newDay: number;
         newIndex: number;
     }>();
     @Output() stageDeleted = new EventEmitter<{
-        deletedStage: Stage;
+        deletedStage: TripStage;
     }>();
     isOverTrash = false;
 
@@ -64,7 +64,7 @@ export class StagesListDayComponent {
     }
 
 
-    onDragEntered(event: CdkDragEnter<Stage[]>) {
+    onDragEntered(event: CdkDragEnter<TripStage[]>) {
         console.log('Entered Drop List:', this.day);
 
         //Todo: store player globally to be able to react better to quick enter and exit animation sequences (e. g. destroy old animation before starting the new one)
@@ -97,7 +97,7 @@ export class StagesListDayComponent {
         }, 260);
     }
 
-    onDragExit(event: CdkDragExit<Stage[]>) {
+    onDragExit(event: CdkDragExit<TripStage[]>) {
         console.log('Exited Drop List:', this.day);
 
         let height;
@@ -128,7 +128,7 @@ export class StagesListDayComponent {
     }
 
 
-    drop(event: CdkDragDrop<Stage[]>) {
+    drop(event: CdkDragDrop<TripStage[]>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
             const movedStage = event.container.data[event.currentIndex];

@@ -39,11 +39,14 @@ export class TripsComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        const mainRect = this.main.nativeElement.getBoundingClientRect();
-        const tableStyle = window.getComputedStyle(this.tripList.nativeElement.querySelector("table")!);
-        const tableBody = this.tripList.nativeElement.querySelector("tbody")!;
-        const height = mainRect.bottom - parseFloat(tableStyle.margin) - tableBody.getBoundingClientRect().top;
-        tableBody.style.height = `${height}px`;
+        setTimeout(() => {
+            let mainRect = this.main.nativeElement.getBoundingClientRect();
+            const tableStyle = window.getComputedStyle(this.tripList.nativeElement.querySelector("table")!);
+            this.main.nativeElement.style.height = `calc(100vh - ${mainRect.top}px - ${parseFloat(tableStyle.margin)}px`;
+            mainRect = this.main.nativeElement.getBoundingClientRect();
+            const tableBody = this.tripList.nativeElement.querySelector("tbody")!;
+            tableBody.style.height = `calc(${mainRect.bottom}px - ${parseFloat(tableStyle.margin)}px - ${tableBody.getBoundingClientRect().top}px)`;
+        }, 1)
     }
 
     updateTrip({original, updated}: { original: Trip, updated: Trip }) {

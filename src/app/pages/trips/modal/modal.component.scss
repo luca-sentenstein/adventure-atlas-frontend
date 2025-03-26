@@ -1,0 +1,376 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modal {
+        width: 37.5rem;
+        height: 25rem;
+        background-color: #FEFEFE;
+        border-radius: 15px;
+        transition: height 0.2s ease-in-out;
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1.25rem;
+            height: 17%;
+            //height: 4.183rem;
+            border-bottom: 1px solid #1E1E1E;
+
+            h3 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+
+            ul {
+                display: flex;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+
+                li {
+                    margin-left: 1.25rem;
+                    text-align: center;
+                    align-content: center;
+                    position: relative;
+
+                    a {
+                        font-size: 1.25rem;
+                        font-weight: bolder;
+                        cursor: pointer;
+
+                        &:hover {
+                            color: #1E1E1E;
+                        }
+
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            width: 0;
+                            height: 2px;
+                            bottom: 0;
+                            left: 0;
+                            background-color: #1E1E1E;
+                            transition: width 0.3s ease-in-out;
+                        }
+
+                        &:hover::after,
+                        &.selected::after {
+                            width: 100%;
+                        }
+                    }
+
+                    button {
+                        border: 2px solid red;
+                        border-radius: 30px;
+                        background-color: transparent;
+                        cursor: pointer;
+                        color: red;
+                        font-size: 1.125rem;
+                        font-weight: bolder;
+                        padding: 0.25rem 1.125rem;
+                        transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+
+                        &:hover {
+                            background-color: red;
+                            color: white;
+                        }
+                    }
+                }
+            }
+        }
+
+        div {
+            height: 63%;
+            box-sizing: border-box;
+
+            &.imagePage {
+                padding: 1.25rem 1.25rem 0.5rem;
+                display: flex;
+                justify-content: space-between;
+
+                .fileUploadBox {
+                    width: 18.125rem;
+                    height: 100%;
+                    border: 2px dashed #757575;
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    transition: border-color 0.3s ease;
+
+                    p {
+                        margin: 0.25rem 0;
+                        color: #1E1E1E;
+                    }
+
+                    input[type=file] {
+                        display: none;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+                        border-color: #1E1E1E;
+                    }
+                }
+
+                .imagePreview {
+                    width: 13.125rem;
+                    height: 100%;
+                    border: 1px solid #1E1E1E;
+                    border-radius: 15px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    position: relative;
+
+                    p {
+                        margin: 0.25rem 0;
+                        color: #1E1E1E;
+                    }
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        border-radius: inherit;
+                        object-fit: cover;
+                    }
+
+                    svg {
+                        opacity: 0;
+                        position: absolute;
+                        top: 10px;
+                        right: 10px;
+                        transition: opacity 0.3s ease;
+
+                        &.showSvg {
+                            opacity: 1;
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+
+            &.accessPage {
+                height: 73.1%;
+
+                table {
+                    display: block;
+                    width: calc(100% - 9.376rem);
+                    margin: 0 4.688rem;
+                    border-radius: 15px;
+                    overflow-y: hidden;
+
+                    thead {
+                        position: relative;
+                        display: block;
+                        background-color: rgba(30, 30, 30, 0.8);
+
+                        tr {
+                            display:flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 3.125rem;
+                            color: #FEFEFE;
+
+                            th {
+                                flex-basis:100%;
+                                flex-grow:2;
+                                display: block;
+                                font-size: 1.25rem;
+                            }
+                        }
+                    }
+
+                    tbody {
+                        display: block;
+                        position: relative;
+                        width: 100%;
+                        height: 14.5rem;
+                        overflow-y: auto;
+                        background-color: rgba(226, 226, 226, 0.7);
+
+                        tr {
+                            display: flex;
+                            align-items: center;
+                            height: 2.813rem;
+                            color: #1E1E1E;
+                            border-bottom: 1px solid rgba(30, 30, 30, 0.2);
+
+                            td {
+                                flex-basis: 100%;
+                                flex-grow: 2;
+                                display: block;
+                                font-size: 1rem;
+                                text-align: center;
+
+                                select {
+                                    position: relative;
+                                    appearance: none;
+                                    background: white url("data:image/svg+xml;utf8,<svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M4 6L8 10L12 6' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>") no-repeat;
+                                    background-position: right 5px top 50%;
+                                    border: 1px solid #D9D9D9;
+                                    width: 5rem;
+                                    height: 1.875rem;
+                                    padding-left: 0.5rem;
+                                    font-size: 1rem;
+                                }
+
+                                svg {
+                                    cursor: pointer;
+                                }
+
+                                .disabled {
+                                    cursor: default;
+                                }
+                            }
+
+                            &:hover {
+                                background-color: rgba(30, 30, 30, 0.1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.propertiesPage {
+                height: 68.85%;
+                padding: 0 4.688rem;
+                display: flex;
+                flex-direction: column;
+                font-size: 1.25rem;
+
+                .footerBox {
+                    margin-top: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 2rem;
+
+                    .toggleBox {
+                        display: inline-flex;
+                        align-items: center;
+
+                        .toggleCheckbox {
+                            display: none;
+                        }
+
+                        .toggleContainer {
+                            position: relative;
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            width: fit-content;
+                            border: 3px solid #1E1E1E;
+                            border-radius: 20px;
+                            background: #343434;
+                            font-weight: bolder;
+                            color: #343434;
+                            cursor: pointer;
+                        }
+
+                        .toggleContainer::before {
+                            content: '';
+                            position: absolute;
+                            width: 50%;
+                            height: 100%;
+                            left: 0;
+                            border-radius: 20px;
+                            background: white;
+                            transition: all 0.3s;
+                        }
+
+                        .toggleContainer div {
+                            padding: 6px;
+                            text-align: center;
+                            z-index: 1;
+                        }
+
+                        .toggleCheckbox:checked + .toggleContainer::before {
+                            left: 50%;
+                        }
+                        .toggleCheckbox:checked + .toggleContainer div:first-child{
+                            color: white;
+                            transition: color 0.3s;
+                        }
+                        .toggleCheckbox:checked + .toggleContainer div:last-child{
+                            color: #343434;
+                            transition: color 0.3s;
+                        }
+                        .toggleCheckbox + .toggleContainer div:first-child{
+                            color: #343434;
+                            transition: color 0.3s;
+                        }
+                        .toggleCheckbox + .toggleContainer div:last-child{
+                            color: white;
+                            transition: color 0.3s;
+                        }
+                    }
+
+                    .dateInput {
+                        display: flex;
+                        padding: 0.5rem;
+                        align-items: center;
+                        background: rgba(0, 0, 0, 0.2);
+                        border-radius: 8px;
+                        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                        backdrop-filter: blur(5px);
+                        border: 1px solid rgba(0, 0, 0, 0.3);
+
+                        input {
+                            margin-right: 0.5rem;
+                            background: transparent;
+                            cursor: pointer;
+                            border: none;
+                            font-size: 1rem;
+                        }
+
+                        &:focus-within {
+                            border-color: rgba(0, 0, 0, 0.8);
+                        }
+                    }
+                }
+            }
+        }
+
+        footer {
+            height: 20%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem 1.25rem;
+
+            button {
+                width: 9.375rem;
+                cursor: pointer;
+                padding: 0;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                font-size: 1.25rem;
+                transition: box-shadow 0.3s ease;
+
+                &:hover {
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.75);
+                }
+
+                &.save {
+                    background-color: #2D91EF;
+                }
+
+                &.cancel {
+                    background-color: #757575;
+                }
+            }
+        }
+    }
+}

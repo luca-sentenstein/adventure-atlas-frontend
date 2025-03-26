@@ -1,5 +1,6 @@
-export interface StageLocation {
+export interface Waypoint {
     id: number;
+    index: number;
     createdAt: Date;
     updatedAt: Date;
     name: string;

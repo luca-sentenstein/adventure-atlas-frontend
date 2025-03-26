@@ -1,0 +1,4 @@
+<div class="inputBox">
+    <input [disabled]="disabled" #input type="text" [value]="value" (input)="onInputChange(input.value)" id="{{label}}" />
+    <label for="{{label}}" [ngClass]="{'active': hasValue}">{{label}}</label>
+</div>

@@ -4,6 +4,6 @@
         <h1>{{ trip.title }}</h1>
         <h2>{{ trip.subtitle }}</h2>
         <p>{{ trip.description }}</p>
-        <app-button-link>Check Out</app-button-link>
+        <app-button-link [link]="'/trips/edit'" [queryParams]="trip.id" >Check Out</app-button-link>
     </div>
 </div>

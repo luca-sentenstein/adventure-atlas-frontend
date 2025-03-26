@@ -26,12 +26,16 @@ export class TripsComponent implements AfterViewInit {
     @ViewChild("main") main!: ElementRef<HTMLElement>;
     @ViewChild("tripList", { read: ElementRef }) tripList!: ElementRef<HTMLElement>;
     private tripsSubject = new BehaviorSubject<Trip[]>([]);
-    trips$: Observable<Trip[]> = this.tripsSubject.asObservable();
+    filteredTrips$: Observable<Trip[]> = this.tripsSubject.asObservable();
+    trips: Trip[] = [];
     selectedTrip: Trip | null = null;
     createTripOpen: boolean = false;
 
     constructor(private service: TripsService) {
-        this.service.getAllTrips().subscribe(trips => this.tripsSubject.next(trips));
+        this.service.getAllTrips().subscribe(trips => {
+            this.tripsSubject.next(trips);
+            this.trips = trips;
+        });
     }
 
     ngAfterViewInit() {
@@ -99,4 +103,14 @@ export class TripsComponent implements AfterViewInit {
         this.createTripOpen = false;
     }
 
+    onSearch(query: string) {
+        if (query === "") {
+            this.tripsSubject.next(this.trips);
+            return;
+        }
+        const filteredTrips = this.trips.filter(trip =>
+            trip.title.toLowerCase().includes(query.toLowerCase())
+        );
+        this.tripsSubject.next(filteredTrips);
+    }
 }

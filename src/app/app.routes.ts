@@ -13,8 +13,8 @@ export const routes: Routes = [
     {path: "discover", component: DiscoverComponent},
     {path: "about", component: AboutComponent},
     {path: "auth", component: AuthComponent},
-    {path: "edit", component: TripEditorComponent, canActivate: [authGuard]},
     {path: "auth", component: AuthComponent},
     {path: "trips", component: TripsComponent, canActivate: [authGuard]},
+    {path: "trips/edit/:tripId", component: TripEditorComponent, canActivate: [authGuard]},
     {path: "**", component: NotFoundComponent}
 ];

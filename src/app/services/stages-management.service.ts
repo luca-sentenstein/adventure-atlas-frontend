@@ -13,26 +13,43 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class StagesManagementService {
+    private tripId: number = -1;
+
     private stagesSubject = new BehaviorSubject<TripStage[]>([]);
+
     stages$ = this.stagesSubject.asObservable();
+    private tripLengthSubject = new BehaviorSubject<number>(0); // Will be set based on backend
 
-    private tripLengthSubject = new BehaviorSubject<number>(3); // Will be set based on backend
     tripLength$ = this.tripLengthSubject.asObservable();
-
     private selectedStageSubject = new BehaviorSubject<TripStage | null>(null); // Track selected stage
+
     selectedStage$ = this.selectedStageSubject.asObservable();
-
     private selectedDaySubject = new BehaviorSubject<number | null>(null); // Track selected day
+
     selectedDay$ = this.selectedDaySubject.asObservable();
+    private startDateSubject = new BehaviorSubject<Date>(new Date(0)); // Track trip start day
 
-    private startDateSubject = new BehaviorSubject<Date>(new Date(1999, 4, 20)); // Track trip start day
     startDate$ = this.startDateSubject.asObservable();
-
     private writeAccessSubject = new BehaviorSubject<boolean>(true);
+
+
     writeAccessSubject$ = this.writeAccessSubject.asObservable();
 
-
     constructor(private http: HttpClient, private router: Router, private authService: AuthService) {
+    }
+
+    resetSubjects() {
+        this.stagesSubject.next([]);
+        this.tripLengthSubject.next(0);
+        this.selectedStageSubject.next(null);
+        this.selectedDaySubject.next(null);
+        this.startDateSubject.next(new Date(0));
+        this.writeAccessSubject.next(true);
+    }
+
+    setTripId(id: number) {
+        this.tripId = id;
+        this.resetSubjects()
         this.fetchTripBackend();
     }
 
@@ -65,8 +82,6 @@ export class StagesManagementService {
         return this.selectedStageSubject.value?.waypoints || [];
     }
 
-    tripId: number = 5;
-
     fetchTripBackend() {
         this.http.get<Trip>(
             BASE_URL + "/trip/" + this.tripId
@@ -79,8 +94,12 @@ export class StagesManagementService {
                 this.stagesSubject.next(trip.stages);
                 this.tripLengthSubject.next(trip.length);
                 const owner = trip.owner.id === this.authService.getUser()?.id;
-                const access = trip.tripAccesses.find(access => access.user.id === this.authService.getUser()?.id);
-                this.writeAccessSubject.next(owner || access?.accessLevel === "write");
+                const access = trip.tripAccesses?.find(access => access.user.id === this.authService.getUser()?.id);
+                if (trip.public && !owner && !access) {
+                    this.writeAccessSubject.next(false);
+                } else {
+                    this.writeAccessSubject.next(owner || access?.accessLevel === "write");
+                }
                 this.startDateSubject.next(trip.startDate);
             },
             error: error => {
@@ -110,7 +129,7 @@ export class StagesManagementService {
                 if (error.status === 401) {
                     alert("You don't have access to edit this trip.");
                 } else if (error.status === 404) {
-                    alert("Trip with id " + this.tripId + " not found");
+                    alert(error.message);
                 } else {
                     alert(error.message);
                 }
@@ -152,6 +171,7 @@ export class StagesManagementService {
             day: day,
             displayRoute: false,
             cost: 0,
+            waypoints: [],
         }
 
         const createdStage = this.addStageBackend(newStage);

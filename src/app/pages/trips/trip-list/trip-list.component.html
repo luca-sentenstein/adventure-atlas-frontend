@@ -11,7 +11,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let trip of trips$ | async">
+        <tr *ngFor="let trip of trips$ | async" (click)="navigateToTripEdit(trip)">
             <td>{{ trip.title }}</td>
             <td>{{ trip.createdAt | date }}</td>
             <td>{{ trip.updatedAt | date }}</td>
@@ -19,7 +19,7 @@
             <td class="centered">{{ trip.owner.userName }}</td>
             <td class="centered">{{ trip.length }}</td>
             <td class="centered">
-                <svg class="moreIcon" height="1.5em" width="1.5em" (click)="editTrip.emit(trip)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.055 32.055">
+                <svg class="moreIcon" height="1.5em" width="1.5em" (click)="clickEditTrip($event, trip)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.055 32.055">
                     <g>
                         <path d="M3.968,12.061C1.775,12.061,0,13.835,0,16.027c0,2.192,1.773,3.967,3.968,3.967c2.189,0,3.966-1.772,3.966-3.967
                             C7.934,13.835,6.157,12.061,3.968,12.061z M16.233,12.061c-2.188,0-3.968,1.773-3.968,3.965c0,2.192,1.778,3.967,3.968,3.967

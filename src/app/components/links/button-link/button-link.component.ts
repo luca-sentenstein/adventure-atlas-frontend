@@ -11,4 +11,5 @@ import { RouterLink } from '@angular/router';
 })
 export class ButtonLinkComponent {
     @Input() link: string = '';
+    @Input() queryParams!: number;
 }

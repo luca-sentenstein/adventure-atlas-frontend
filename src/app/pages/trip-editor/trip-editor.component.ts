@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditSectionComponent } from '../../components/edit-section/edit-section.component';
 import { MapDisplayComponent } from '../../components/map-display/map-display.component';
@@ -9,6 +9,7 @@ import { TripStage } from '../../interfaces/trip-stage';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { SearchbarComponent } from '../../components/searchbar/searchbar.component';
 import { DayPanelComponent } from '../../components/day-panel/day-panel.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-trip-editor',
@@ -94,13 +95,19 @@ import { DayPanelComponent } from '../../components/day-panel/day-panel.componen
         ])
     ]
 })
-export class TripEditorComponent {
+export class TripEditorComponent implements OnInit {
     selectedStage: TripStage | null = null;
 
-    constructor(protected stagesService: StagesManagementService) {
+    constructor(protected stagesService: StagesManagementService, private route: ActivatedRoute) {
         this.stagesService.selectedStage$.subscribe(stage => {
             this.selectedStage = stage; // Update selected stage
         });
+    }
+
+    ngOnInit() {
+        this.route.params.subscribe(params => {
+            this.stagesService.setTripId(params["tripId"]);
+        })
     }
 
     previewCoordinates: { lat: number; lng: number } | undefined;

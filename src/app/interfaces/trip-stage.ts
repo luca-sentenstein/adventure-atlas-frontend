@@ -24,4 +24,5 @@ export interface TripStageCreate {
     start: Date | undefined;  //start time
     end: Date | undefined;  //end time
     day: number;
+    waypoints: Waypoint[];
 }

@@ -3,8 +3,8 @@
     display: flex;
     gap: 2rem;
     padding: 2rem;
-    height: 90vh;
-    width: 100vw;
+    //height: 90vh;
+    //width: 100vw;
 }
 
 .map-group {
@@ -21,7 +21,7 @@
     position: absolute;
     right: 2rem;
     width: 350px;
-    height: 80%; //We need a height to have a smooth animation because the edit section doesn't have a height of its own if no stage is selected
+    height: 85%; //We need a height to have a smooth animation because the edit section doesn't have a height of its own if no stage is selected
     //Todo: better solution for height; maybe render edit section either way with empty input fields?
     z-index: 10;
     justify-content: center;

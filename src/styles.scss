@@ -8,7 +8,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
     color: #1E1E1E;
-    min-height: 100vh;
+    //min-height: 100vh;
     background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
 }
 
@@ -223,7 +223,7 @@ body::before {
 }
 
 // Firefox:
-@supports (-moz-appearance: none) { 
+@supports (-moz-appearance: none) {
     .bubble, .interactive, .gradients-container {
         display: none !important;
         animation: none !important;

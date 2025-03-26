@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditSectionComponent } from '../../components/edit-section/edit-section.component';
 import { MapDisplayComponent } from '../../components/map-display/map-display.component';
@@ -95,7 +95,8 @@ import { ActivatedRoute } from '@angular/router';
         ])
     ]
 })
-export class TripEditorComponent implements OnInit {
+export class TripEditorComponent implements OnInit, AfterViewInit {
+    @ViewChild("editPage", { read: ElementRef }) editPage!: ElementRef<HTMLElement>;
     selectedStage: TripStage | null = null;
 
     constructor(protected stagesService: StagesManagementService, private route: ActivatedRoute) {
@@ -108,6 +109,13 @@ export class TripEditorComponent implements OnInit {
         this.route.params.subscribe(params => {
             this.stagesService.setTripId(params["tripId"]);
         })
+    }
+
+    ngAfterViewInit() {
+        setTimeout(() => {
+            const editRect = this.editPage.nativeElement.getBoundingClientRect();
+            this.editPage.nativeElement.style.height = `calc(100vh - ${editRect.y}px)`;
+        }, 1);
     }
 
     previewCoordinates: { lat: number; lng: number } | undefined;

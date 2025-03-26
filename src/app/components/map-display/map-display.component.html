@@ -1,7 +1,7 @@
 <google-map #map [zoom]="zoom" [options]="mapOptions" width="100%" height="100%">
-    <map-directions-renderer *ngIf="directionsResult" [directions]="directionsResult"></map-directions-renderer>
-    @for(markerPosition of markerPositions; track markerPosition){
-        <map-marker *ngIf="markerPosition" [position]="markerPosition"></map-marker>
+    <map-directions-renderer *ngIf="directionsResult" [directions]="directionsResult" [options]="directionsRendererOptions"></map-directions-renderer>
+    @for(markerPosition of markerPositions; track markerPosition; let i = $index){
+        <map-marker *ngIf="markerPosition" [position]="markerPosition" [options]="{ draggable: true}" (mapDragend)="onMarkerDragEnd($event, i)" [label]="stage?.displayRoute ? getMarkerLabel(i) : ''"></map-marker>
     }
     <map-marker
         *ngIf="previewMarkerPosition"

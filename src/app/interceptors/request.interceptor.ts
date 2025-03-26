@@ -13,7 +13,7 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
     let headers = req.body ? new HttpHeaders({"Content-Type": "application/json"}) : new HttpHeaders();
 
     if (req.context.get(AUTH_REQUIRED)) {
-        headers.set("Authorization", "Bearer " + authService.getToken())
+        headers = headers.set("Authorization", "Bearer " + authService.getToken())
     }
 
     const modifiedReq = req.clone({
@@ -22,7 +22,7 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(modifiedReq).pipe(
         catchError(err => {
-            if (err.status === 401 && router.url !== "/auth") {
+            if (err.status === 401 && !authService.isLoggedIn() && router.url !== "/auth") {
                 void router.navigate(["/auth"])
                 alert("Your session is over. Please log in again.")
             }

@@ -5,6 +5,7 @@ import { AUTH_REQUIRED } from '../interceptors/request.interceptor';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
+import { User } from '../interfaces/user';
 
 @Injectable({
     providedIn: 'root'
@@ -53,6 +54,18 @@ export class AuthService {
         localStorage.removeItem('access');
         void this.router.navigate(['/']);
         alert("You have been logged out");
+    }
+
+    getUser() {
+        const token = this.getToken();
+        if (token) {
+            const decodedToken = jwtDecode<{ id: number, username: string }>(token);
+            return {
+                id: decodedToken.id,
+                userName: decodedToken.username,
+            } as User
+        }
+        return null;
     }
 
     private isTokenExpired(token: string) {

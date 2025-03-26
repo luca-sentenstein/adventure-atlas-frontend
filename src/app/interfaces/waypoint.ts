@@ -1,6 +1,9 @@
 export interface Waypoint {
-    id: number; //Todo: do I need to have an ID? Because we have the order in the array in stage?
+    id: number;
+    index: number | undefined;
+    createdAt: Date;
+    updatedAt: Date;
     name: string;
-    latitude: number;
-    longitude: number;
+    lat: number;
+    long: number;
 }

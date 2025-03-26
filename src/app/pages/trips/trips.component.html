@@ -1,1 +1,18 @@
-<p>trips works!</p>
+<main #main>
+    <div class="header">
+        <app-search-bar placeholder="Search for a trip..."></app-search-bar>
+        <h2>Total trips: {{ (trips$ | async)?.length }}</h2>
+        <button type="button" (click)="createTripOpen = true" >Add</button>
+    </div>
+    <app-trip-list #tripList [trips$]="trips$" (editTrip)="selectedTrip = $event"></app-trip-list>
+</main>
+<app-modal *ngIf="selectedTrip"
+           [trip]="selectedTrip"
+           (saveTrip)="updateTrip($event)"
+           (cancel)="cancelTrip($event)"
+           (deleteTrip)="deleteTrip($event)">
+</app-modal>
+<app-create-modal *ngIf="createTripOpen"
+                  (createTrip)="createTrip($event)"
+                  (cancel)="closeCreateModal()">
+</app-create-modal>

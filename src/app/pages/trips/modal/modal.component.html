@@ -1,0 +1,91 @@
+<div class="overlay">
+    <div #modal class="modal">
+        <nav #navbar>
+            <h3>{{ trip.title }}</h3>
+            <ul>
+                <li>
+                    <a (click)="switchPage('image')" [ngClass]="{ selected: activePage == 'image' }">Image</a>
+                </li>
+                <li>
+                    <a (click)="switchPage('access')" [ngClass]="{ selected: activePage == 'access' }">Access</a>
+                </li>
+                <li>
+                    <a (click)="switchPage('properties')" [ngClass]="{ selected: activePage == 'properties' }">Properties</a>
+                </li>
+                <li>
+                    <button type="button" (click)="hasWriteAccess() ? deleteTrip.emit(trip.id) : null">Delete</button>
+                </li>
+            </ul>
+        </nav>
+        <div *ngIf="activePage == 'image'" class="imagePage">
+            <div #fileInputBox class="fileUploadBox" (click)="hasWriteAccess() ? openFileUpload() : null">
+                <svg width="5em" height="5em" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M45.4475 26.4745L45.3008 24.4505C45.11 21.8336 44.0667 19.3514 42.3307 17.3839C40.5947 15.4165 38.2617 14.0723 35.689 13.557C33.1162 13.0418 30.4455 13.384 28.0858 14.5313C25.726 15.6785 23.8074 17.5676 22.6235 19.9091L21.9382 21.2611L20.4262 21.3625C16.9721 21.5919 13.7427 23.1556 11.4208 25.7231C9.09883 28.2905 7.86645 31.6604 7.9842 35.1201C8.10196 38.5797 9.56063 41.858 12.0518 44.2616C14.5429 46.6652 17.8712 48.0058 21.3328 47.9998H26.6662C27.0198 47.9998 27.3589 48.1403 27.609 48.3903C27.859 48.6404 27.9995 48.9795 27.9995 49.3331C27.9995 49.6868 27.859 50.0259 27.609 50.2759C27.3589 50.526 27.0198 50.6665 26.6662 50.6665H21.3328C17.1846 50.6646 13.1992 49.0518 10.2173 46.1681C7.23529 43.2844 5.48985 39.3553 5.34907 35.2095C5.20829 31.0636 6.68318 27.0251 9.46267 23.9458C12.2422 20.8665 16.109 18.987 20.2475 18.7038C21.6952 15.8427 24.0405 13.5348 26.9246 12.1335C29.8087 10.7321 33.0726 10.3146 36.2166 10.9447C39.3606 11.5748 42.2114 13.2179 44.3327 15.6225C46.4541 18.027 47.7289 21.0604 47.9622 24.2585C51.1979 24.9187 54.0737 26.7558 56.033 29.4141C57.9923 32.0725 58.8957 35.3632 58.5685 38.6494C58.2413 41.9355 56.7068 44.9835 54.2618 47.2034C51.8168 49.4232 48.6352 50.6572 45.3328 50.6665H37.3328C36.9792 50.6665 36.6401 50.526 36.39 50.2759C36.14 50.0259 35.9995 49.6868 35.9995 49.3331C35.9995 48.9795 36.14 48.6404 36.39 48.3903C36.6401 48.1403 36.9792 47.9998 37.3328 47.9998H45.3328C47.9804 48.0024 50.5343 47.0203 52.4979 45.2445C54.4616 43.4687 55.6946 41.0261 55.9574 38.3916C56.2201 35.7571 55.4937 33.1191 53.9194 30.9905C52.3451 28.8618 50.0354 27.3947 47.4395 26.8745L45.4475 26.4745ZM32.9408 29.7251C32.6908 29.4752 32.3517 29.3347 31.9982 29.3347C31.6446 29.3347 31.3055 29.4752 31.0555 29.7251L24.3888 36.3918C24.265 36.5158 24.1669 36.6629 24.1 36.8248C24.033 36.9867 23.9986 37.1602 23.9988 37.3354C23.9989 37.5106 24.0335 37.6841 24.1007 37.8459C24.1678 38.0077 24.2662 38.1547 24.3902 38.2785C24.5141 38.4023 24.6613 38.5004 24.8232 38.5673C24.9851 38.6343 25.1586 38.6687 25.3338 38.6685C25.509 38.6684 25.6824 38.6338 25.8442 38.5666C26.006 38.4995 26.153 38.4011 26.2768 38.2771L30.6662 33.8851V50.6665C30.6662 51.0201 30.8066 51.3592 31.0567 51.6093C31.3067 51.8593 31.6459 51.9998 31.9995 51.9998C32.3531 51.9998 32.6923 51.8593 32.9423 51.6093C33.1924 51.3592 33.3328 51.0201 33.3328 50.6665V33.8851L37.7222 38.2771C37.9722 38.5275 38.3114 38.6683 38.6652 38.6685C38.8404 38.6687 39.0139 38.6343 39.1758 38.5673C39.3377 38.5004 39.4849 38.4023 39.6088 38.2785C39.7328 38.1547 39.8312 38.0077 39.8983 37.8459C39.9655 37.6841 40.0001 37.5106 40.0002 37.3354C40.0004 37.1602 39.966 36.9867 39.8991 36.8248C39.8321 36.6629 39.734 36.5158 39.6102 36.3918L32.9408 29.7251Z" fill="black"/>
+                </svg>
+                <p>Browse a file to upload</p>
+                <input #fileInput type="file" accept="image/*" (change)="onFileChange()">
+            </div>
+            <div class="imagePreview" (mouseenter)="previewBoxHovered = true" (mouseleave)="previewBoxHovered = false">
+                <p *ngIf="!trip.image">Preview</p>
+                <img *ngIf="trip.image" [src]="trip.image" alt="Normally here should be ypu picture">
+                <svg [ngClass]="{ showSvg: trip.image && previewBoxHovered}" (click)="hasWriteAccess() ? clearImage() : null" width="1.5em" height="1.5em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 12H10M10 12H42M10 12V40C10 41.0609 10.4214 42.0783 11.1716 42.8284C11.9217 43.5786 12.9391 44 14 44H34C35.0609 44 36.0783 43.5786 36.8284 42.8284C37.5786 42.0783 38 41.0609 38 40V12M16 12V8C16 6.93913 16.4214 5.92172 17.1716 5.17157C17.9217 4.42143 18.9391 4 20 4H28C29.0609 4 30.0783 4.42143 30.8284 5.17157C31.5786 5.92172 32 6.93913 32 8V12M20 22V34M28 22V34" stroke="#FF0000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+        <div *ngIf="activePage == 'access'" class="accessPage">
+            <modal-user-search-bar [disabled]="!isOwner()" (onClick)="isOwner() ? addAccess($event) : null"></modal-user-search-bar>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Access</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let access of trip.tripAccesses">
+                        <tr *ngIf="trip.owner.id !== access.user.id">
+                            <td>{{ access.user.userName }}</td>
+                            <td>
+                                <select [disabled]="!isOwner()" [(ngModel)]="access.accessLevel">
+                                    <option value="read">Read</option>
+                                    <option value="write">Write</option>
+                                </select>
+                            </td>
+                            <td>
+                                <svg (click)="isOwner() ? removeAccess(access.id) : null" [ngClass]="{ disabled: !isOwner() }" width="1.5em" height="1.5em" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 12H10M10 12H42M10 12V40C10 41.0609 10.4214 42.0783 11.1716 42.8284C11.9217 43.5786 12.9391 44 14 44H34C35.0609 44 36.0783 43.5786 36.8284 42.8284C37.5786 42.0783 38 41.0609 38 40V12M16 12V8C16 6.93913 16.4214 5.92172 17.1716 5.17157C17.9217 4.42143 18.9391 4 20 4H28C29.0609 4 30.0783 4.42143 30.8284 5.17157C31.5786 5.92172 32 6.93913 32 8V12M20 22V34M28 22V34" stroke="#FF0000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="activePage == 'properties'" class="propertiesPage">
+            <modal-text-input [disabled]="!hasWriteAccess()" label="Title" [value]="trip.title" (valueChange)="trip.title = $event"></modal-text-input>
+            <modal-text-input [disabled]="!hasWriteAccess()" label="Subtitle" [value]="trip.subtitle" (valueChange)="trip.subtitle = $event"></modal-text-input>
+            <modal-text-input [disabled]="!hasWriteAccess()" label="Description" [value]="trip.description" (valueChange)="trip.description = $event"></modal-text-input>
+            <div class="footerBox">
+                <div class="toggleBox">
+                    <input [disabled]="!hasWriteAccess()" type="checkbox" [(ngModel)]="trip.public" id="toggle" class="toggleCheckbox"/>
+                    <label for="toggle" class="toggleContainer">
+                        <div>Private</div>
+                        <div>Public</div>
+                    </label>
+                </div>
+                <div class="dateInput">
+                    <input [disabled]="!hasWriteAccess()" type="date" id="date" [(ngModel)]="trip.startDate">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.3333 1.6665V4.99984M6.66667 1.6665V4.99984M2.5 8.33317H17.5M4.16667 3.33317H15.8333C16.7538 3.33317 17.5 4.07936 17.5 4.99984V16.6665C17.5 17.587 16.7538 18.3332 15.8333 18.3332H4.16667C3.24619 18.3332 2.5 17.587 2.5 16.6665V4.99984C2.5 4.07936 3.24619 3.33317 4.16667 3.33317Z" stroke="#1E1E1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <footer #footer>
+            <button class="save" type="button" (click)="hasWriteAccess() ? saveTrip.emit({original: originalTrip, updated: trip}) : null">Save</button>
+            <button class="cancel" type="button" (click)="cancel.emit(originalTrip)">Cancel</button>
+        </footer>
+    </div>
+</div>

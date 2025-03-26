@@ -1,0 +1,171 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modal {
+        width: 37.5rem;
+        height: 29.688rem;
+        background-color: #FEFEFE;
+        border-radius: 15px;
+        transition: height 0.2s ease-in-out;
+
+        nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 1.25rem;
+            height: 14.31%;
+            border-bottom: 1px solid #1E1E1E;
+
+            h3 {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+        }
+
+        div {
+            height: 63%;
+            box-sizing: border-box;
+
+            &.propertiesPage {
+                height: 68.85%;
+                padding: 0 4.688rem;
+                display: flex;
+                flex-direction: column;
+                font-size: 1.25rem;
+
+                .footerBox {
+                    margin-top: 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 2rem;
+
+                    .toggleBox {
+                        display: inline-flex;
+                        align-items: center;
+
+                        .toggleCheckbox {
+                            display: none;
+                        }
+
+                        .toggleContainer {
+                            position: relative;
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            width: fit-content;
+                            border: 3px solid #1E1E1E;
+                            border-radius: 20px;
+                            background: #343434;
+                            font-weight: bolder;
+                            color: #343434;
+                            cursor: pointer;
+                        }
+
+                        .toggleContainer::before {
+                            content: '';
+                            position: absolute;
+                            width: 50%;
+                            height: 100%;
+                            left: 0;
+                            border-radius: 20px;
+                            background: white;
+                            transition: all 0.3s;
+                        }
+
+                        .toggleContainer div {
+                            padding: 6px;
+                            text-align: center;
+                            z-index: 1;
+                        }
+
+                        .toggleCheckbox:checked + .toggleContainer::before {
+                            left: 50%;
+                        }
+
+                        .toggleCheckbox:checked + .toggleContainer div:first-child{
+                            color: white;
+                            transition: color 0.3s;
+                        }
+
+                        .toggleCheckbox:checked + .toggleContainer div:last-child{
+                            color: #343434;
+                            transition: color 0.3s;
+                        }
+
+                        .toggleCheckbox + .toggleContainer div:first-child{
+                            color: #343434;
+                            transition: color 0.3s;
+                        }
+
+                        .toggleCheckbox + .toggleContainer div:last-child{
+                            color: white;
+                            transition: color 0.3s;
+                        }
+                    }
+
+                    .dateInput {
+                        display: flex;
+                        padding: 0.5rem;
+                        align-items: center;
+                        background: rgba(0, 0, 0, 0.2);
+                        border-radius: 8px;
+                        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                        backdrop-filter: blur(5px);
+                        border: 1px solid rgba(0, 0, 0, 0.3);
+
+                        input {
+                            margin-right: 0.5rem;
+                            background: transparent;
+                            cursor: pointer;
+                            border: none;
+                            font-size: 1rem;
+                        }
+
+                        &:focus-within {
+                            border-color: rgba(0, 0, 0, 0.8);
+                        }
+                    }
+                }
+            }
+        }
+
+        footer {
+            height: 16.84%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 1.25rem 1.25rem;
+
+            button {
+                width: 9.375rem;
+                cursor: pointer;
+                padding: 0;
+                border: none;
+                border-radius: 5px;
+                color: white;
+                font-size: 1.25rem;
+                transition: box-shadow 0.3s ease;
+
+                &:hover {
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.75);
+                }
+
+                &.save {
+                    background-color: #2D91EF;
+                }
+
+                &.cancel {
+                    background-color: #757575;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,79 @@
+table {
+    display: block;
+    width: calc(100% - 6.25rem);
+    margin: 3.125rem;
+    border-radius: 15px;
+    overflow-y: hidden;
+
+    thead {
+        position: relative;
+        display: block;
+        width: calc(100% - 6.25rem);
+        padding: 0 3.125rem;
+        background-color: rgba(30, 30, 30, 0.8);
+
+        tr {
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            height: 5.938rem;
+            color: #FEFEFE;
+
+            .leftAligned {
+                text-align: left;
+            }
+
+            th {
+                flex-basis:100%;
+                flex-grow:2;
+                display: block;
+                font-size: 1.75rem;
+
+            }
+        }
+    }
+
+    tbody {
+        display: block;
+        position: relative;
+        width: 100%;
+        overflow-y: auto;
+        background-color: rgba(255, 255, 255, 0.6);
+
+        tr {
+            display:flex;
+            padding: 0 3.125rem;
+            align-items: center;
+            height: 5.938rem;
+            color: #1E1E1E;
+            border-bottom: 2px solid #FEFEFE;
+
+            td {
+                flex-basis:100%;
+                flex-grow:2;
+                display: block;
+                font-size: 1.25rem;
+
+                &.centered {
+                    text-align: center;
+                }
+
+                .moreIcon {
+                    cursor: pointer;
+                }
+
+                input[type="checkbox"] {
+                    cursor: pointer;
+                    width: 1.25rem;
+                    height: 1.25rem;
+                    margin: 0;
+                }
+
+            }
+
+            &:hover {
+                background-color: rgba(30, 30, 30, 0.1);
+            }
+        }
+    }
+}

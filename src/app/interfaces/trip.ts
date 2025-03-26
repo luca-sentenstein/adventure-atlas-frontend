@@ -15,6 +15,7 @@ export interface Trip {
     startDate: Date;
     stages: TripStage[];
     tripAccesses: TripAccess[];
+    length: number;
 }
 
 export interface TripCreate {
@@ -23,4 +24,6 @@ export interface TripCreate {
     description: string;
     public: boolean;
     startDate: Date;
+    stages: TripStage[];
+    length: number
 }

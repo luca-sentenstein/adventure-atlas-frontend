@@ -63,7 +63,8 @@ export class TripsService {
             owner: this.authService.getUser(),
             createdAt: new Date(trip.createdAt),
             updatedAt: new Date(trip.updatedAt),
-            startDate: new Date(trip.startDate)
+            startDate: new Date(trip.startDate),
+            tripAccesses: []
         };
     }
 

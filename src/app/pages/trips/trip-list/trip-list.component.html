@@ -17,7 +17,7 @@
             <td>{{ trip.updatedAt | date }}</td>
             <td class="centered">{{ trip.public ? "Public" : "Private" }}</td>
             <td class="centered">{{ trip.owner.userName }}</td>
-            <td class="centered">{{ evaluateDays(trip) }}</td>
+            <td class="centered">{{ trip.length }}</td>
             <td class="centered">
                 <svg class="moreIcon" height="1.5em" width="1.5em" (click)="editTrip.emit(trip)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.055 32.055">
                     <g>

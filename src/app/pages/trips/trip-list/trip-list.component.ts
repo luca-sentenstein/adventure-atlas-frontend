@@ -16,9 +16,4 @@ import { AsyncPipe, DatePipe, NgForOf } from '@angular/common';
 export class TripListComponent {
     @Input() trips$!: Observable<Trip[]>;
     @Output() editTrip: EventEmitter<Trip> = new EventEmitter();
-
-    evaluateDays(trip: Trip) {
-        if (!trip.stages) return 0;
-        return trip.stages.reduce((max, stage) => Math.max(max, stage.day), 0);
-    }
 }

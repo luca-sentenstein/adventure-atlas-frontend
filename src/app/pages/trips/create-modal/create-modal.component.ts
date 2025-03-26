@@ -22,5 +22,7 @@ export class CreateModalComponent {
         description: "",
         public: false,
         startDate: new Date(),
+        stages: [],
+        length: 0
     };
 }

@@ -5,6 +5,7 @@ import { SubmitButtonComponent } from '../../../components/buttons/submit-button
 import { InputComponent } from '../../../components/inputs/input/input.component';
 import { CheckboxComponent } from '../../../components/inputs/checkbox/checkbox.component';
 import { AuthService } from '../../../services/auth.service';
+import { passwordComplexityValidator } from '../../../validators/password.validator';
 
 @Component({
     selector: 'app-register-form',
@@ -27,7 +28,7 @@ export class RegisterFormComponent {
         lastName: ["", [Validators.required]],
         username: ["", [Validators.required]],
         email: ["", [Validators.required, Validators.email]],
-        password: ["", [Validators.required, Validators.minLength(8)]],
+        password: ["", [Validators.required, Validators.minLength(8), passwordComplexityValidator()]],
         remember: [false, [Validators.required]]
     })
 

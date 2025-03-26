@@ -1,0 +1,21 @@
+.element{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    //background: white;
+    width: 100%;
+    border-radius: 10px;
+    border: rgba(0, 0, 0, 0.26) 1px solid;
+    height: 70px;
+    justify-content: center;
+    box-sizing: border-box;
+    cursor: grab;
+}
+
+h2{
+    margin: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 90%;
+}

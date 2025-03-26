@@ -1,6 +1,6 @@
 import { User } from './user';
-import { TripStage } from './trip-stage';
 import { TripAccess } from './trip-access';
+import { TripStage } from './trip-stage';
 
 export interface Trip {
     id: number;

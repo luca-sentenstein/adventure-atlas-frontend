@@ -1,0 +1,13 @@
+<div class="box" [class.selected]="stagesService.getSelectedStageId() == id" [style.cursor]="locked ? 'default' : 'grab'" (click)="onStageClick()">
+    <h3 class="text">{{ title }}</h3>
+    <hr class="line">
+    <h3 class="text">
+        @if (startTime){
+            <span *ngIf="startTime">{{ startTime | date:"HH:mm" }}</span>
+            <span *ngIf="startTime && endTime"> - </span>
+            <span *ngIf="endTime">{{ endTime | date:"HH:mm" }}</span>
+        }@else{
+            <br>
+        }
+    </h3>
+</div>

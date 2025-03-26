@@ -1,0 +1,18 @@
+<div cdkDropListGroup class="container" #container>
+    <div class="content-wrapper">
+        <div class="spacer"></div>
+        @for (day of getDayRange(); track day) {
+            <app-stages-list-day [containerRef]="container" [localStages]="stagesService.getStagesForDay(day)" [day]="day" (stageReordered)="onStageReordered($event)" (stageDeleted)="onStageDeleted($event)"></app-stages-list-day>
+        }
+        <div class="spacer"></div>
+    </div>
+    <div class="options-wrapper" *ngIf="showOptions" (click)="$event.stopPropagation()" (mouseenter)="keepOptionsOpen()" (mouseleave)="closeOptions()">>
+        <div class="options">
+            <div class="option" (click)="addNewStage()">Add stage</div>
+            <div class="option" (click)="addNewDay()">Add day</div>
+        </div>
+    </div>
+    <div *ngIf="stagesService.hasWriteAccess()" class="add-button">
+        <button (mouseenter)="openOptions()" (mouseleave)="closeOptions()">+</button>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<div #timelineContainer
+     class="timeline-container"
+     (mousedown)="onMouseDown($event)"
+     (wheel)="onScroll($event)">
+
+    <div class="timeline">
+        <div *ngFor="let dayObj of days; let i = index"
+             class="day"
+             (click)="onDayClick(i)"
+             [class.highlight]="i + 1 === highlightDay" [class.sunday]="dayObj.day === 'Sun'">
+            <div class="weekday">{{ dayObj.day }}</div>
+            <div class="date">{{ dayObj.date }}</div>
+        </div>
+    </div>
+</div>

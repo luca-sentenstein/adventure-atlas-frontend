@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="list" [class.selected]="stagesService.getSelectedDay() == day" #listElem cdkDropList [cdkDropListData]="localStages" (cdkDropListDropped)="drop($event)" (cdkDropListEntered)="onDragEntered($event)" (cdkDropListExited)="onDragExit($event)">
+        <div class="header" (click)="onDayClick()">
+            <h2>
+                Day {{day}}
+            </h2>
+        </div>
+        <!--Is it a good idea to track stage directly?-->
+        @for (stage of localStages; track stage.id){
+            <div cdkDrag #itemElem class="drag-item" [cdkDragDisabled]="!stagesService.hasWriteAccess()" [cdkDragData]="stage" >
+                <app-trip-stage-element
+                                        [id]="stage.id"
+                                        [title]="stage.title"
+                                        [startTime]="stage.start"
+                                        [endTime]="stage.end"
+                                        [locked]="!stagesService.hasWriteAccess()">
+                </app-trip-stage-element>
+                <div class="custom-placeholder"
+                     *cdkDragPlaceholder
+                     [class.over-trash]="isOverTrash"
+                ></div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,83 @@
+.autocomplete-container {
+    position: relative;
+    display: inline-block;
+    width: 100%; /* Allow full width within parent */
+
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.5rem;
+    //border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+    //background-color: #fff;
+    caret-color: #1E1E1E;
+    color: #1E1E1E;
+    background: transparent;
+
+    /* Match the focus style from EditSectionComponent */
+    &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    /* Placeholder styling */
+    &::placeholder {
+        color: #888;
+        opacity: 1; /* Ensure placeholder is visible */
+    }
+}
+
+/* Optional: Add a subtle hover effect */
+.input-field:hover {
+    border-color: #999;
+}
+
+.input-field.noButton{
+    border-radius: 4px;
+}
+
+
+//Style autocompletion window
+::ng-deep .pac-container {
+    background-color: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+::ng-deep .pac-item {
+    color: #1E1E1E !important;
+    background-color: transparent !important;
+    font-size: 16px !important;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+}
+
+::ng-deep .pac-item-query,
+::ng-deep .pac-item-description {
+    font-size: 16px !important;
+    font-weight: normal !important;
+}
+
+::ng-deep .pac-item:hover,
+::ng-deep .pac-item-selected {
+
+    background-color: rgba(0,0,0,0.26) !important;
+    font-size: 16px !important;
+}
+
+::ng-deep .pac-item-query {
+    color: #1E1E1E !important;
+    font-weight: normal !important;
+}
+
+::ng-deep .pac-item-description {
+    color: #1E1E1E !important;
+    font-size: 16px !important;
+}

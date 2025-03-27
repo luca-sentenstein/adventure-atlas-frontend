@@ -306,6 +306,22 @@ export class StagesManagementService {
     }
 
 
+    updateWaypoint(index: number, name: string, latitude: number, longitude: number) {
+        const stage = this.selectedStageSubject.value;
+        if (!stage) {
+            console.error('No stage selected, cannot update waypoint.');
+            return;
+        }
+
+        stage.waypoints[index].name = name;
+        stage.waypoints[index].lat = latitude;
+        stage.waypoints[index].lng = longitude;
+
+        this.updateStage(stage);
+
+
+        this.patchWaypointsBackend(stage);
+    }
 
 
     updateStageDayBackend(stageID: number, newDay: number){

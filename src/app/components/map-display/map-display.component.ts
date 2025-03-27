@@ -5,6 +5,7 @@ import { NgIf } from "@angular/common";
 import { Waypoint } from '../../interfaces/waypoint';
 import { TripStage } from '../../interfaces/trip-stage';
 import MapTypeControlStyle = google.maps.MapTypeControlStyle;
+import { StagesManagementService } from '../../services/stages-management.service';
 
 @Component({
   selector: 'app-map-display',
@@ -30,6 +31,11 @@ export class MapDisplayComponent implements OnChanges {
             mapTypeIds: ["roadmap", "satellite"] // Hide terrain submenu
         }
     }
+    // Add directions renderer options to suppress default markers
+    directionsRendererOptions: google.maps.DirectionsRendererOptions = {
+        suppressMarkers: true, // Hides default markers
+        preserveViewport: false // Allows the map to adjust zoom/bounds to fit the route
+    };
 
     directionsResult: google.maps.DirectionsResult | undefined;
 
@@ -39,7 +45,7 @@ export class MapDisplayComponent implements OnChanges {
     isRoute: boolean | undefined;
 
 
-    constructor(private directionsService: MapDirectionsService) {}
+    constructor(private directionsService: MapDirectionsService, private stagesService: StagesManagementService) {}
 
     ngOnChanges(changes: SimpleChanges) {
 
@@ -50,25 +56,22 @@ export class MapDisplayComponent implements OnChanges {
         this.handleStageChanges();
     }
 
-    handleStageChanges(){
+    handleStageChanges() {
         const waypoints = this.getWaypoints();
-
         let rerender = false;
 
-        //Re-render only if something has changed
-        if(this.stage?.displayRoute!=this.isRoute){
+        if (this.stage?.displayRoute !== this.isRoute) {
             this.isRoute = this.stage?.displayRoute;
             rerender = true;
         }
 
-        if(!this.sameWaypoints(this.waypoints, waypoints)){
-            this.waypoints = [... waypoints];
+        if (!this.sameWaypoints(this.waypoints, waypoints)) {
+            this.waypoints = [...waypoints];
             rerender = true;
         }
 
-        if(rerender){
+        if (rerender) {
             const waypointsLocations = this.getLocations(waypoints);
-
 
             if (waypointsLocations.length === 0) {
                 this.directionsResult = undefined;
@@ -77,24 +80,23 @@ export class MapDisplayComponent implements OnChanges {
                 this.zoom = 3;
                 this.map.googleMap!.setZoom(3);
                 this.panToCenterIfReady();
-            }
-            else{
-                if(this.stage?.displayRoute){
+            } else {
+                // Always set markerPositions, even when showing route
+                this.markerPositions = waypointsLocations;
+
+                if (this.stage?.displayRoute) {
                     //If isRoute is true but the stage has only one waypoint, go to that waypoint
                     if (waypointsLocations.length === 1) {
                         this.goToRouteStart(waypointsLocations[0]);
                     } else if (waypointsLocations.length > 1) {
                         this.getDirections(waypointsLocations);
                     }
-                }
-                else{
+                } else {
                     this.directionsResult = undefined;
-                    this.markerPositions = waypointsLocations;
                     this.panToMarkers();
                 }
             }
         }
-
     }
 
 
@@ -142,6 +144,12 @@ export class MapDisplayComponent implements OnChanges {
         this.panToCenterIfReady();
     }
 
+    // Method to generate A, B, C, etc. based on index
+    getMarkerLabel(index: number): string {
+        // Convert index to letter (0 = A, 1 = B, etc.)
+        return String.fromCharCode(65 + index); // 65 is ASCII for 'A'
+    }
+
     panToMarkers(){
         if (this.map.googleMap && this.markerPositions.length > 0) {
             if (this.markerPositions.length === 1) {
@@ -151,7 +159,7 @@ export class MapDisplayComponent implements OnChanges {
                     lat: position.lat(),
                     lng: position.lng()
                 };
-                this.zoom = 10; // Matches your goToLocation zoom, adjust as needed
+                this.zoom = 10;
                 this.map.googleMap.setZoom(this.zoom);
                 this.map.panTo(this.center);
             } else {
@@ -160,13 +168,11 @@ export class MapDisplayComponent implements OnChanges {
                 this.markerPositions.forEach(position => {
                     bounds.extend(position);
                 });
-                this.map.googleMap.fitBounds(bounds);
+                this.map.googleMap.fitBounds(bounds, 300);
                 this.center = {
                     lat: bounds.getCenter().lat(),
                     lng: bounds.getCenter().lng()
                 };
-                // Optional: Add padding for better framing
-                // this.map.googleMap.fitBounds(bounds, { padding: 50 });
             }
             this.panToCenterIfReady(); // Ensure smooth transition
         } else if (this.map.googleMap) {
@@ -210,7 +216,6 @@ export class MapDisplayComponent implements OnChanges {
             map(response => response.result)
         ).subscribe(result => {
             this.directionsResult = result;
-            this.markerPositions = [];
             this.previewMarkerPosition = undefined;
         });
     }
@@ -232,6 +237,33 @@ export class MapDisplayComponent implements OnChanges {
     private panToCenterIfReady() {
         if (this.map.googleMap) {
             this.map.panTo(this.center); // Use panTo for smooth transition
+        }
+    }
+
+    onMarkerDragEnd(event: google.maps.MapMouseEvent, index: number) {
+        if (event.latLng) {
+            const newPosition = {
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng()
+            };
+
+            // Update the marker position
+            this.markerPositions[index] = new google.maps.LatLng(newPosition.lat, newPosition.lng);
+
+            // Update the corresponding waypoint
+            if (this.waypoints[index]) {
+
+                // Update waypoint
+                this.stagesService.updateWaypoint(index, this.waypoints[index].name, newPosition.lat, newPosition.lng);
+
+                // If showing route, recalculate directions
+                if (this.stage?.displayRoute && this.waypoints.length > 1) {
+                    const waypointsLocations = this.getLocations(this.waypoints);
+                    this.getDirections(waypointsLocations);
+                } else {
+                    this.panToMarkers();
+                }
+            }
         }
     }
 }

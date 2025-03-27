@@ -45,7 +45,7 @@ export class MapDisplayComponent implements OnChanges {
     isRoute: boolean | undefined;
 
 
-    constructor(private directionsService: MapDirectionsService, private stagesService: StagesManagementService) {}
+    constructor(private directionsService: MapDirectionsService, protected stagesService: StagesManagementService) {}
 
     ngOnChanges(changes: SimpleChanges) {
 

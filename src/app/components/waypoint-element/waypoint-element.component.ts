@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { Waypoint } from '../../interfaces/waypoint';
+import { StagesManagementService } from '../../services/stages-management.service';
 
 @Component({
   selector: 'app-waypoint-element',
@@ -29,6 +30,9 @@ export class WaypointElementComponent implements OnInit, AfterViewInit, OnChange
     private originalName: string = '';
     isEditable: boolean = false;
     private isMouseOver = false;
+
+
+    constructor(private stagesService: StagesManagementService) {}
 
     ngOnInit(): void {
         this.originalName = this.waypoint.name;
@@ -59,6 +63,10 @@ export class WaypointElementComponent implements OnInit, AfterViewInit, OnChange
         event.stopPropagation();
         event.preventDefault();
 
+        // Check if user has write access before allowing edit
+        if (!this.stagesService.hasWriteAccess()) {
+            return; // Exit early if no write access
+        }
 
         if (!this.isEditable) {
             this.isEditable = true;
